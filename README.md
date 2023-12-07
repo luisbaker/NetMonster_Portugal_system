@@ -1,40 +1,48 @@
-# NetMonster_Portugal_endpoint
-NetMonster Location Data Integration
+# NetMonster Portugal Sistema Core
 
-Este código gerencia o envio e tratamento de informações de localização das células, contribuídas pelos usuários, para as bases de dados das operadoras portuguesas através do NetMonster.
+NetMonster Portugal - Sistema de Frontend e Explicação
 
-Funcionalidades:
+**Descrição Simplificada:**
 
-1. Atualização Regular do Arquivo NTM:
-   - Um arquivo NTM específico para cada operadora é mantido online.
-   - Atualizações regulares garantem dados precisos.
+O NetMonster Portugal gerencia a coleta e processamento de dados de localização, enviando-os para as bases de dados das operadoras nacionais. Este sistema inclui:
 
-2. Envio de Dados de Localização:
-   - Usuários enviam informações em formato JSON por meio do endpoint especificado [aqui](https://netmonster.app/#docs-owner-receive).
+**Funcionalidades:**
 
-3. Integração com Bases de Dados:
-   - O código facilita a integração eficiente, direcionando as informações de localização para as bases de dados correspondentes de cada operadora.
+1. **Atualizações Regulares do NTM:**
+   - Mantém online um arquivo NTM específico para cada operadora, com atualizações regulares.
 
-4. Processamento Flexível:
-   - Oferece flexibilidade no processamento das informações, permitindo decisões personalizadas.
+2. **Envio de Dados de Localização:**
+   - Usuários submetem informações em JSON através do endpoint [inserir link].
 
-5. Comunicação Opcional via E-mail:
-   - Os usuários têm a opção de incluir endereços de e-mail para facilitar a comunicação após o envio bem-sucedido das informações.
+3. **Integração com Bases de Dados:**
+   - Facilita a integração eficiente direcionando as informações para as bases de dados de cada operadora.
 
-Instruções:
+4. **Processamento Flexível:**
+   - Permite decisões personalizadas no processamento das informações.
 
-- Clone este repositório.
-- Configure os arquivos NTM para cada operadora.
-- Implemente o endpoint de recebimento conforme [documentação](https://netmonster.app/#docs-owner-receive).
-- Personalize o código conforme as necessidades da operadora.
+**Informações de Utilização Diária:**
 
-Observação:
-Certifique-se de seguir as práticas de segurança e privacidade ao lidar com dados de localização dos usuários.
+   - Fornece dados sobre utilizadores ativos diariamente.
+   - Registra modelos de smartphones mais usados por marca.
 
-Autor:
-iBakerServer Team
+**Registo de Modelos por Operadoras:**
 
-Licença:
-Este código é fornecido sob a licença Apache 2.0. Consulte o arquivo LICENSE para obter detalhes.
+   - Captura e regista os modelos de smartphones mais usados por cada operadora.
+   - Inclui estatísticas relevantes para Vodafone Portugal, NOS, MEO e Digi Portugal.
+
+**Instruções:**
+
+1. Clone este repositório.
+2. Configure os arquivos NTM para cada operadora.
+3. Implemente o endpoint de recebimento conforme a documentação.
+4. Personalize o código conforme necessário.
+
+**Frontend NetMonster Portugal:**
+   - Sistema de interface exibindo estatísticas nacionais e informações específicas para Vodafone Portugal, NOS, MEO e Digi Portugal.
+   - Permite acesso às bases de dados de cada operadora nacional.
+
+**Autor:** Equipa iBakerServer
+
+**Licença:** Este código é fornecido sob a licença Apache 2.0. Consulte o arquivo LICENSE para obter detalhes.
 
 Contribuições são bem-vindas!
