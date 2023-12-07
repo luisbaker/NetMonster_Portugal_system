@@ -1,4 +1,4 @@
-# netmosterPT_endpoint
+# NetMonster_Portugal_endpoint
 NetMonster Location Data Integration
 
 Este código gerencia o envio e tratamento de informações de localização das células, contribuídas pelos usuários, para as bases de dados das operadoras portuguesas através do NetMonster.
