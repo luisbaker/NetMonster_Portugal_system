@@ -12,7 +12,7 @@ O NetMonster Portugal gerencia a coleta e processamento de dados de localizaçã
    - Mantém online um arquivo NTM específico para cada operadora, com atualizações regulares.
 
 2. **Envio de Dados de Localização:**
-   - Usuários submetem informações em JSON através do endpoint [inserir link].
+   - Usuários submetem informações em JSON através do endpoint.
 
 3. **Integração com Bases de Dados:**
    - Facilita a integração eficiente direcionando as informações para as bases de dados de cada operadora.
