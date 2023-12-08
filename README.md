@@ -1,5 +1,7 @@
 # NetMonster Portugal Sistema Core
 
+Status do desenvolvimento: alpha
+
 NetMonster Portugal - Sistema de Frontend e Explicação
 
 **Descrição Simplificada:**
