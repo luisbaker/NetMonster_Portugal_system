@@ -28,6 +28,9 @@ canvas {
   border: 1px solid #837e7e;
   border-radius: 2px;
   margin: 10px;
+  /* Defina a largura e a altura diretamente */
+  width: 300px;
+  height: 300px;
 }
 
 h2 {

@@ -1,11 +1,14 @@
 // Função para carregar e processar os dados de um arquivo CSV
 async function loadCSV(filePath) {
   return new Promise((resolve, reject) => {
+    let enbs = new Set(); // Cria um conjunto para armazenar eNBs únicos
     Papa.parse(filePath, {
       download: true,
-      header: true,
-      dynamicTyping: true,
-      complete: (result) => resolve(result.data),
+      step: function(row) {
+        let enb = row.data[0].split(';')[5]; // Obtém o eNB da linha atual
+        enbs.add(enb); // Adiciona o eNB ao conjunto
+      },
+      complete: () => resolve(enbs.size), // Retorna o número de eNBs únicos
       error: (error) => reject(error),
     });
   });
@@ -24,12 +27,23 @@ function createPieChart(canvasId, label, data, total) {
         backgroundColor: ['#36a2eb', '#d3d3d3'],
       }],
     },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1, 
+      layout: {
+        padding: {
+          top: 5,
+          left: 5,
+          right: 5,
+          bottom: 5
+        }
+      }
+    }
   });
 }
 
-// Função principal para processar os dados e criar gráficos
 async function generateCharts() {
-  // Definir os percentuais diretamente no JavaScript
   const percentuais = {
     'NOS': 4874,
     'Vodafone': 5074,
@@ -37,20 +51,15 @@ async function generateCharts() {
     'MEO': 5048
   };
 
-  // Iterar sobre cada operadora
   const operadoras = ['NOS', 'Vodafone', 'Digi', 'MEO'];
 
   for (const operadora of operadoras) {
-    // Carregar os dados de cada arquivo CSV
-    const operadoraData = await loadCSV(`database/${operadora}_PT.ntm`);
-    console.log(`${operadora} data:`, operadoraData); // Log para depuração
-    const operadoraENBCount = operadoraData.length;
+    const operadoraENBCount = await loadCSV(`/database/${operadora}_PT.ntm`);
+    console.log(`${operadora} data:`, operadoraENBCount); 
 
-    // Criar gráfico circular para cada operadora com base nos percentuais
     createPieChart(`${operadora.toLowerCase()}Canvas`, operadora, operadoraENBCount, percentuais[operadora]);
-    console.log(`Created chart for ${operadora}`); // Log para depuração
+    console.log(`Created chart for ${operadora}`); 
   }
 }
 
-// Chamar a função principal para gerar os gráficos
 generateCharts();
