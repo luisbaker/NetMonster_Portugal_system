@@ -32,19 +32,53 @@ O NetMonster Portugal gerencia a coleta e processamento de dados de localizaçã
    - Captura e regista os modelos de smartphones mais usados por cada operadora.
    - Inclui estatísticas relevantes para Vodafone Portugal, NOS, MEO e Digi Portugal.
 
-**Instruções:**
-
-1. Clone este repositório.
-2. Configure os arquivos NTM para cada operadora.
-3. Implemente o endpoint de recebimento conforme a documentação.
-4. Personalize o código conforme necessário.
-
 **Frontend NetMonster Portugal:**
    - Sistema de interface exibindo estatísticas nacionais e informações específicas para Vodafone Portugal, NOS, MEO e Digi Portugal.
    - Permite acesso às bases de dados de cada operadora nacional.
 
-**Autor:** Equipa iBakerServer
+# Project Setup and Start Guide
 
-**Licença:** Este código é fornecido sob a licença Apache 2.0. Consulte o arquivo LICENSE para obter detalhes.
+## Prerequisites
 
-Contribuições são bem-vindas!
+Before you begin, ensure you have met the following requirements:
+
+- You have installed the latest LTS version of [Node.js and npm](https://nodejs.org/en/download/).
+- You have a Windows/Linux/Mac machine.
+
+## Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/NetMonster_Portugal_system.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd NetMonster_Portugal_system
+   ```
+
+3. Install the project dependencies:
+
+   ```bash
+   npm install
+   ```
+
+## Start
+
+To start the project, run the following command: `npm start`
+
+
+## Environment Variables
+
+The following environment variables can be configured in the project:
+
+- `PORT`: The port number on which the server will listen. Default is `8080`.
+
+Make sure to set these variables according to your environment before starting the project.
+
+## Linting and formatting
+
+This projects uses [Biome](https://biomejs.dev/guides/getting-started/) to lint and format all JavaScript files. Make sure to install the [VSCode extension](https://biomejs.dev/guides/integrate-in-editor/#vs-code) to have support for Biome while developing.
+
