@@ -10,7 +10,7 @@ async function loadCSV(filePath) {
             return;
           }
           console.log(`Processing row: ${row.data}`);
-          let enb = row.data[5]; 
+          let enb = row.data[5];
           if (enb) {
             console.log(`Found eNB: ${enb}`);
             enbs.add(enb);
