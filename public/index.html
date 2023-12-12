@@ -4,28 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NetMonster Portugal</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <script defer src="js/multipleEnbCharts.js"></script>
 </head>
 <body>
   <header>
-    <img src="/img/logo.png" alt="NetMonster Logo" width="50">
-    <h1>NetMonster Portugal</h1>
-    <p>Confira as estatísticas das antenas móveis em Portugal no NetMonster.</p>
+    <div class="header-content">
+      <img src="/img/logo.png" alt="NetMonster Logo" width="50">
+      <h1>NetMonster Portugal</h1>
+    </div>
+    <p>Confira as estatísticas das antenas descobertas em Portugal</p>
   </header>
 
-  <section id="chartsContainer" class="charts-container">
-    <canvas id="nosCanvas" width="50" height="50"></canvas>
-    <canvas id="vodafoneCanvas" width="50" height="50"></canvas>
-    <canvas id="digiCanvas" width="50" height="50"></canvas>
-    <canvas id="meoCanvas" width="50" height="50"></canvas>
+  <section class="statistics-section">
+    <div class="column">
+      <h2>Últimas Importações</h2>
+      <ul>
+      </ul>
+      <h2>Estatísticas por Operador</h2>
+      <ul>
+      </ul>
+    </div>
+    <div class="column">
+      <h2>Top Usuários</h2>
+      <ul>
+      </ul>
+      <h2>Top Smartphones</h2>
+      <ul>
+      </ul>
+    </div>
   </section>
-
-  <footer>
-    <script src="js/direitosAutorais.js" defer></script>
-    <section id="direitosAutorais"></section>
-  </footer>
+  <div id="main">
+    <script src="js/main.js" defer></script>
+  </div>
 </body>
 </html>
