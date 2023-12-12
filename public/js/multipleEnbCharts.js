@@ -1,15 +1,39 @@
-// Função para carregar e processar os dados de um arquivo CSV
 async function loadCSV(filePath) {
   return new Promise((resolve, reject) => {
-    let enbs = new Set(); // Cria um conjunto para armazenar eNBs únicos
+    let enbs = new Set();
     Papa.parse(filePath, {
       download: true,
-      step: function(row) {
-        let enb = row.data[0].split(';')[5]; // Obtém o eNB da linha atual
-        enbs.add(enb); // Adiciona o eNB ao conjunto
+      delimiter: ";",
+      step: function (row) {
+        try {
+          // Ignore rows that don't start with "4G"
+          if (!row.data[0].startsWith("4G")) {
+            return;
+          }
+
+          console.log(`Processing row: ${row.data}`);
+
+          let enb = row.data[5]; // Assuming eNB is always at index 5 for 4G
+
+          if (enb) {
+            console.log(`Found eNB: ${enb}`);
+            enbs.add(enb);
+          } else {
+            console.warn("No eNB found in the row:", row.data);
+          }
+        } catch (error) {
+          console.error("Error processing row:", error);
+          reject(error);
+        }
       },
-      complete: () => resolve(enbs.size), // Retorna o número de eNBs únicos
-      error: (error) => reject(error),
+      complete: () => {
+        console.log("NetMonster processing complete. Unique eNBs count:", enbs.size);
+        resolve(enbs.size);
+      },
+      error: (error) => {
+        console.error("NetMonster processing error:", error);
+        reject(error);
+      },
     });
   });
 }
@@ -30,13 +54,13 @@ function createPieChart(canvasId, label, data, total) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 1, 
+      aspectRatio: 1,
       layout: {
         padding: {
-          top: 1,
-          left: 2,
-          right: 2,
-          bottom: 2
+          top: 5,
+          left: 5,
+          right: 5,
+          bottom: 5
         }
       }
     }
@@ -54,11 +78,15 @@ async function generateCharts() {
   const operadoras = ['NOS', 'Vodafone', 'Digi', 'MEO'];
 
   for (const operadora of operadoras) {
-    const operadoraENBCount = await loadCSV(`/database/${operadora}_PT.ntm`);
-    console.log(`${operadora} data:`, operadoraENBCount); 
+    try {
+      const operadoraENBCount = await loadCSV(`/database/${operadora}_PT.ntm`);
+      console.log(`${operadora} data:`, operadoraENBCount);
 
-    createPieChart(`${operadora.toLowerCase()}Canvas`, operadora, operadoraENBCount, percentuais[operadora]);
-    console.log(`Created chart for ${operadora}`); 
+      createPieChart(`${operadora.toLowerCase()}Canvas`, operadora, operadoraENBCount, percentuais[operadora]);
+      console.log(`Created chart for ${operadora}`);
+    } catch (error) {
+      console.error(`Error generating chart for ${operadora}:`, error);
+    }
   }
 }
 
