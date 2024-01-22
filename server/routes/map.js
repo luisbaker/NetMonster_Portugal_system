@@ -1,7 +1,7 @@
 // map.js
 // Importing 'readFile' and 'join' directly from 'fs' and 'path' modules
 import { readFile } from "fs/promises";
-import { join } from "path";
+import { getAllDataForMapFromNetworkCodes } from '../libs/map-points.js';
 
 // Importing the required function from 'map-points.js'
 import { getAllDataForMap } from "../libs/map-points.js"; // Corrected import statement

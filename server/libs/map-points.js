@@ -1,14 +1,20 @@
-import fs from 'fs/promises';
-import path from 'path';
+// mapa-points.js
+import { readFile } from 'fs/promises';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url'; // Adicionado import
+
+// Use fileURLToPath para converter import.meta.url para um caminho
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Função para obter dados brutos do mapa a partir de um arquivo local
 const getRawMapData = async (networkCode) => {
     const fileName = `${networkCode}-268.ntm`;
-    const rawDataPath = path.join(__dirname, 'public', 'database', fileName);
+    const rawDataPath = join(__dirname, 'public', 'database', fileName);
 
     try {
         // Leia o conteúdo do arquivo
-        const data = await fs.readFile(rawDataPath, 'utf-8');
+        const data = await readFile(rawDataPath, 'utf-8');
         // Supondo que o conteúdo do arquivo contém os dados brutos do mapa
         return data.split('\n').filter(line => line.trim() !== '');  // Remove linhas em branco
     } catch (error) {
@@ -18,8 +24,8 @@ const getRawMapData = async (networkCode) => {
 };
 
 // Função principal para obter dados formatados do mapa
-export const getAllDataForMap = async () => {
-    const networkCodes = ['01', '02', '03', '06'];  // Códigos de rede para VDF, DIGI, NOS, MEO
+export async function getAllDataForMap() {
+    const networkCodes = ['01', '02', '03', '06']; // Códigos de rede para VDF, DIGI, NOS, MEO
 
     try {
         const allMappedData = [];
@@ -113,7 +119,7 @@ export const getAllDataForMap = async () => {
         console.error('Erro ao obter dados do mapa:', error);
         throw error;
     }
-};
+}
 
 // Exemplo de uso
 const allData = await getAllDataForMap();
