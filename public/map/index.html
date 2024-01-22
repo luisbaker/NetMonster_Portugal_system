@@ -2,22 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet Map with NetMonster CSV Data</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <title>Mapa</title>
+    <!-- Inclua as folhas de estilo e scripts do Leaflet aqui -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-        }
         #map {
-            height: 100%;
+            height: 100vh; /* Preenche toda a altura da tela */
         }
     </style>
 </head>
@@ -25,104 +18,60 @@
     <div id="map"></div>
 
     <script>
-        var map = L.map('map').setView([39.3999, -8.2245], 7);
+        // Inicializar o mapa
+        var map = L.map('map').setView([38.736946, -9.142685], 9);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        // Função para carregar pontos da API
+        function loadAPIPoints() {
+            var apiURL = 'http://localhost:8080/api/map.js';
 
-        // Função para carregar pontos do CSV
-        function loadCSVPoints(csvData, operatorName) {
-            Papa.parse(csvData, {
-                header: true,
-                dynamicTyping: true,
-                complete: function (result) {
-                    console.log('Parsed CSV Data:', result.data);
+            fetch(apiURL)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Data:', data);
 
-                    // Iterar sobre os dados do CSV e adicionar marcadores ao mapa
-                    result.data.forEach(function (point) {
+                    // Iterar sobre os dados da API e adicionar marcadores ao mapa
+                    data.forEach(function (point) {
                         console.log('Point:', point);
 
-                        // Procurar colunas de latitude e longitude dinamicamente
-                        var latColumnName = findColumnBySubstring(point, 'Lat');
-                        var lonColumnName = findColumnBySubstring(point, 'Lon');
+                        // Certifique-se de que as coordenadas são válidas
+                        var latitude = point['latitude'];
+                        var longitude = point['longitude'];
 
-                        // Verificar se as colunas foram encontradas
-                        if (latColumnName && lonColumnName) {
+                        if (!isNaN(latitude) && !isNaN(longitude)) {
+                            var operatorName = point['operatorName'];
+                            var location = point['location'];
+                            var technologies = point['technologies'];
+                            var frequencies = point['frequencies'];
+
                             var markerContent = "<b>" + operatorName + "</b><br>" +
-                                                "Location: " + point.Location;
+                                                "Location: " + location + "<br>" +
+                                                "Operadoras:<ul>";
 
-                            // Adicionar informações específicas da tecnologia
-                            switch (point[Object.keys(point)[0]]) {
-                                case '2G':
-                                    markerContent += "<br>ARFCN: " + point.ARFCN;
-                                    break;
-                                case '3G':
-                                    markerContent += "<br>UARFCN: " + point.UARFCN;
-                                    break;
-                                case '4G':
-                                    markerContent += "<br>EARFCN: " + point.EARFCN;
-                                    break;
-                                case '5G':
-                                    markerContent += "<br>ARFCN: " + point.ARFCN;
-                                    break;
-                                case 'CD':
-                                    // Handle CDMA-specific columns
-                                    markerContent += "<br>CDMA Info: " + point.XX1 + " " + point.NID + " " + point.BID;
-                                    break;
-                                default:
-                                    console.error('Invalid technology type:', point[Object.keys(point)[0]]);
-                                    return; // Skip invalid entry
-                            }
+                            // Adicionar informações de tecnologias e frequências
+                            technologies.forEach(function (tech, index) {
+                                markerContent += "<li>" + tech + ": " + frequencies[index] + "</li>";
+                            });
 
-                            L.marker([point[latColumnName], point[lonColumnName]])
+                            markerContent += "</ul>";
+
+                            // Criar marcador no mapa
+                            L.marker([latitude, longitude])
                                 .addTo(map)
                                 .bindPopup(markerContent);
                         } else {
-                            console.error('Latitude or Longitude column not found for point:', point);
+                            console.error('Invalid latitude or longitude for point:', point);
                         }
                     });
-                }
-            });
+                })
+                .catch(error => {
+                    console.error('Error fetching API:', error);
+                });
         }
 
-        // Função para encontrar uma coluna por substring no nome
-        function findColumnBySubstring(data, substring) {
-            return Object.keys(data).find(function (key) {
-                return key.toLowerCase().includes(substring.toLowerCase());
-            });
-        }
-
-        // URLs dos arquivos CSV
-        var csvUrls = [
-            'http://localhost:8080/database/2g_data.ntm',
-            'http://localhost:8080/database/3g_data.ntm',
-            'http://localhost:8080/database/4g_data.ntm',
-            'http://localhost:8080/database/5g_data.ntm',
-            'http://localhost:8080/database/cdma_data.ntm'
-        ];
-
-        // Nomes das operadoras correspondentes aos arquivos CSV
-        var operatorNames = [
-            '2G Operator',
-            '3G Operator',
-            '4G Operator',
-            '5G Operator',
-            'CDMA Operator'
-        ];
-
-        // Carregar dados de cada arquivo CSV
-        csvUrls.forEach(function (url, index) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    loadCSVPoints(xhr.responseText, operatorNames[index]);
-                }
-            };
-            xhr.open('GET', url, true);
-            xhr.send();
-        });
+        // Chamar a função para carregar pontos da API
+        loadAPIPoints();
     </script>
 </body>
 </html>

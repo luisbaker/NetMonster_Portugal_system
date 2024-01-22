@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-	const autor = "Equipa iBakerServer";
+	const autor = "Equipa Baker Telekom";
 	const anoAtual = new Date().getFullYear();
 	const direitosAutoraisSection = document.getElementById("direitosAutorais");
 	const paragrafoDireitosAutorais = document.createElement("p");
