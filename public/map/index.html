@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,10 +11,12 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
         #map {
-            height: 100vh; /* Preenche toda a altura da tela */
+            height: 100vh;
+            /* Preenche toda a altura da tela */
         }
     </style>
 </head>
+
 <body>
     <div id="map"></div>
 
@@ -46,8 +49,8 @@
                             var frequencies = point['frequencies'];
 
                             var markerContent = "<b>" + operatorName + "</b><br>" +
-                                                "Location: " + location + "<br>" +
-                                                "Operadoras:<ul>";
+                                "Location: " + location + "<br>" +
+                                "Operadoras:<ul>";
 
                             // Adicionar informações de tecnologias e frequências
                             technologies.forEach(function (tech, index) {
@@ -74,4 +77,5 @@
         loadAPIPoints();
     </script>
 </body>
+
 </html>
