@@ -1,22 +1,23 @@
 {
-  "name": "netmonster_portugal_system",
-  "version": "1.0.0",
-  "description": "NetMonster Portugal Sistema Core",
-  "main": "server/index.js",
-  "type": "module",
-  "scripts": {
-    "lint": "biome ci .",
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node --env-file .env ./server/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.18.2",
-    "express-async-handler": "^1.2.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.4.1"
-  }
+	"name": "netmonster_portugal_system",
+	"version": "1.0.0",
+	"description": "NetMonster Portugal Sistema Core",
+	"main": "server/index.js",
+	"type": "module",
+	"scripts": {
+		"lint": "biome ci .",
+		"test": "node --test",
+		"start": "node --env-file .env ./server/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.19.0",
+		"express-async-handler": "^1.2.0",
+		"lodash": "^4.17.21"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.6.1"
+	}
 }
