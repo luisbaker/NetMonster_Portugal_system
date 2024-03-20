@@ -1,34 +1,4 @@
-const MAPPING = {
-	gsm: {
-		format: "2G;MCC;MNC;CID;LAC;XXX;BSIC;Lat;Lon;Location;ARFCN",
-		technology: ["gsm", "2g", "gprs", "edge"],
-	},
-	wcdma: {
-		format: "3G;MCC;MNC;CID;LAC;RNC;PSC;Lat;Lon;Location;UARFCN",
-		technology: [
-			"wcdma",
-			"3g",
-			"umts",
-			"hsdpa",
-			"hsupa",
-			"hspa",
-			"hspa+",
-			"hspa+42",
-		],
-	},
-	lte: {
-		format: "4G;MCC;MNC;CI;TAC;eNB;PCI;Lat;Lon;Location;EARFCN",
-		technology: ["lte", "4g", "lte", "lte-a", "lte-a-pro"],
-	},
-	nr: {
-		format: "5G;MCC;MNC;NCI;TAC;XXX;PCI;Lat;Lon;Location;ARFCN",
-		technology: ["nr", "5g"],
-	},
-	cdma: {
-		format: "CD2;MCC;MNC;BID;NID;XX1;SID;Lat;Lon;Loc;XX2",
-		technology: ["cdma", "cd", "cd2", "evdo"],
-	},
-};
+import { InvalidFieldValueError, UnknownFieldError, getFormat } from "./ntm.js";
 
 const FIELD_MAPPING = {
 	// Constant value
@@ -56,7 +26,7 @@ const FIELD_MAPPING = {
 	// Latitude - GPS coordinate
 	Lat: (cell) => cell?.latitude?.toString?.(),
 	// Longitude - GPS coordinate
-	Lon: (cell) => cell?.longituide?.toString?.(),
+	Lon: (cell) => cell?.longitude?.toString?.(),
 	// Description of the location
 	Location: (cell) => cell?.location?.toString?.(),
 	// Radio frequency channel number
@@ -108,59 +78,12 @@ const FIELD_MAPPING = {
 };
 
 /**
- * Represents an error that occurs when an unknown technology is encountered.
- * @class
- * @extends Error
- */
-export class UnknownTechnologyError extends Error {
-	/**
-	 * Creates a new instance of the UnknownTechnologyError class.
-	 * @param {string} technology - The unknown technology.
-	 */
-	constructor(technology) {
-		super(`Unknown technology "${technology}"`);
-	}
-}
-
-/**
- * Represents an error that occurs when an unknown field is encountered.
- * @class
- * @extends Error
- */
-export class UnknownFieldError extends Error {
-	/**
-	 * Creates a new instance of the UnknownFieldError class.
-	 * @param {string} field - The unknown field.
-	 */
-	constructor(field) {
-		super(`Unknown field "${field}"`);
-	}
-}
-
-/**
- * Represents an error that occurs when an invalid field value is encountered.
- * @class
- * @extends Error
- */
-export class InvalidFieldValueError extends Error {
-	/**
-	 * Creates a new instance of InvalidFieldValueError.
-	 * @param {string} field - The name of the field.
-	 * @param {any} value - The invalid value.
-	 */
-	constructor(field, value) {
-		super(`Invalid value "${value}" for field "${field}"`);
-	}
-}
-
-/**
- * Retrieves the value of a specific field from a cell object.
- *
- * @param {string} field - The field to retrieve the value from.
- * @param {object} cell - The cell object.
- * @returns {string} - The value of the field as a string.
- * @throws {UnknownFieldError} - If the field is not found in the field mapping.
- * @throws {InvalidFieldValueError} - If the retrieved value is not a string.
+ * Retrieves the value of a given field from a cell object.
+ * @param {string} field - The name of the field to retrieve.
+ * @param {object} cell - The cell object to retrieve the field value from.
+ * @throws {UnknownFieldError} If the field does not exist in the FIELD_MAPPING.
+ * @throws {InvalidFieldValueError} If the field value is not a string.
+ * @returns {string} The value of the field, with all semicolons replaced with spaces and trimmed.
  */
 export function getFieldValue(field, cell) {
 	if (!FIELD_MAPPING[field]) {
@@ -177,42 +100,12 @@ export function getFieldValue(field, cell) {
 }
 
 /**
- * Normalizes the given technology string by converting it to lowercase and removing non-word characters.
- *
- * @param {string} technology - The technology string to be normalized.
- * @returns {string} The normalized technology string.
- */
-export function normalizeTechnology(technology) {
-	return technology?.toLowerCase?.().replace(/[\W_]+/g, "") || "unknown";
-}
-
-/**
- * Retrieves the cell format based on the provided cell object.
- *
- * @param {Object} cell - The cell object.
- * @returns {string} The cell format.
- * @throws {UnknownTechnologyError} If the technology of the cell is unknown.
- */
-export function getCellFormat(cell) {
-	const technology = normalizeTechnology(cell?.technology);
-
-	for (const value of Object.values(MAPPING)) {
-		if (value.technology.map(normalizeTechnology).includes(technology)) {
-			return value.format;
-		}
-	}
-
-	throw new UnknownTechnologyError(cell.technology);
-}
-
-/**
- * Converts a cell object to a formatted string in the NetMonster (NTM) format.
- *
- * @param {Object} cell - The cell object to convert.
- * @returns {string} The formatted string in the NTM format.
+ * Converts a cell object to a NTM string.
+ * @param {object} cell - The cell object to convert.
+ * @returns {string} The NTM string representation of the cell.
  */
 export function cellToNtm(cell) {
-	const format = getCellFormat(cell);
+	const format = getFormat(cell?.technology);
 
 	return format
 		.split(";")
