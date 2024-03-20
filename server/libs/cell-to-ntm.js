@@ -56,7 +56,7 @@ const FIELD_MAPPING = {
 	// Latitude - GPS coordinate
 	Lat: (cell) => cell?.latitude?.toString?.(),
 	// Longitude - GPS coordinate
-	Lon: (cell) => cell?.longituide?.toString?.(),
+	Lon: (cell) => cell?.longitude?.toString?.(),
 	// Description of the location
 	Location: (cell) => cell?.location?.toString?.(),
 	// Radio frequency channel number
