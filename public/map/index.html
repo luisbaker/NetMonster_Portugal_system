@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 
 <head>
     <meta charset="UTF-8">
@@ -56,11 +56,11 @@
 <body>
     <div id="map"></div>
 
-<div id="developmentNotice">
-    <span id="closeButton">&times;</span>
-    <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
-    <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
-</div>
+    <div id="developmentNotice">
+        <span id="closeButton">&times;</span>
+        <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
+        <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -86,7 +86,7 @@
 
             var frequencyMapping = {
                 '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
-                '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '38150': 'B38' },
+                '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '2775': 'B7', '38150': 'B38' },
                 '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7' },
                 '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
             };
@@ -95,6 +95,7 @@
             var markerCluster = L.markerClusterGroup();
 
             var debugMode = false;
+            var selectedOperator = 'all'; // Operadora inicialmente selecionada
 
             function addMarker(loc, mnc, apiResponse) {
                 const coords = `${loc.latitude},${loc.longitude}`;
@@ -117,7 +118,7 @@
 
                 if (loc.frequency && !markers[coords].technology[mnc]['4G'].includes(loc.frequency.toString())) {
                     const band = frequencyMapping[mnc] && frequencyMapping[mnc][loc.frequency.toString()];
-                    if (band) {
+                    if (band && !markers[coords].technology[mnc]['4G'].includes(band)) { // Verifica se a banda já está presente
                         markers[coords].technology[mnc]['4G'].push(band);
                     }
                 }
@@ -129,6 +130,7 @@
 
             function generatePopupContent(markerData) {
                 var popupContent = '<b>Operadoras neste suporte:</b><br>';
+                var allFrequenciesZero = true; // Flag para verificar se todas as frequências são zero
 
                 Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
                     if (techInfo['2G'] || techInfo['3G'] || techInfo['4G'].length > 0) {
@@ -144,15 +146,26 @@
                         }
 
                         if (techInfo['4G'].length > 0) {
-                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Frequências 4G: ${techInfo['4G'].join(', ')}<br>`;
+                            const uniqueBands = [...new Set(techInfo['4G'])]; // Remove bandas duplicadas
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Frequências 4G: ${uniqueBands.join(', ')}<br>`;
+                            // Verifica se há pelo menos uma frequência 4G diferente de 0
+                            if (techInfo['4G'].some(band => band !== '0')) {
+                                allFrequenciesZero = false;
+                            }
                         }
                     }
                 });
 
-                if (debugMode && markerData.debugInfo.length > 0) {
-                    popupContent += `<br><b>Debug API:</b><br>`;
+                // Adiciona a mensagem "Sinal 4G detetado mas dados incompletos" apenas se todas as frequências 4G forem zero
+                if (allFrequenciesZero) {
+                    popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;Sinal 4G detetado mas dados incompletos<br>`;
+                }
+
+                // Adiciona informações de depuração
+                if (debugMode && markerData.debugInfo && markerData.debugInfo.length > 0) {
+                    popupContent += '<br><b>Debug API:</b><br>';
                     markerData.debugInfo.forEach(info => {
-                        popupContent += `${info}<br>`;
+                        popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${info}<br>`;
                     });
                 }
 
@@ -163,18 +176,25 @@
                 markerCluster.clearLayers();
 
                 Object.values(markers).forEach(markerData => {
-                    const popupContent = generatePopupContent(markerData);
-                    const marker = L.marker(markerData.latLng, {
-                        icon: L.icon({
-                            iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
-                            iconSize: [30, 30],
-                            iconAnchor: [15, 15],
-                            popupAnchor: [0, -15]
-                        }),
-                        title: 'Operadoras neste suporte'
-                    }).bindPopup(popupContent);
+                    if (selectedOperator === 'all' || markerData.mncs.includes(selectedOperator)) {
+                        const popupContent = generatePopupContent(markerData);
+                        const marker = L.marker(markerData.latLng, {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15],
+                                popupAnchor: [0, -15]
+                            }),
+                            title: 'Operadoras neste suporte'
+                        }).bindPopup(popupContent);
 
-                    markerCluster.addLayer(marker);
+                        // Adiciona o evento de clique ao marcador
+                        marker.on('click', function () {
+                            this.openPopup();
+                        });
+
+                        markerCluster.addLayer(marker);
+                    }
                 });
 
                 map.addLayer(markerCluster);
@@ -200,17 +220,68 @@
                 createMarkers();
             });
 
-            var controlLayers = L.control.layers(null, null, { collapsed: false });
-            var debugCheckbox = L.DomUtil.create('input');
-            debugCheckbox.type = 'checkbox';
-            debugCheckbox.id = 'debugModeCheckbox';
-            var debugLabel = L.DomUtil.create('label');
-            debugLabel.htmlFor = 'debugModeCheckbox';
-            debugLabel.innerText = 'Modo Debug';
-            controlLayers.addOverlay(debugCheckbox, debugLabel);
+            // Adiciona controle de filtro por operadora
+            var operatorFilterControl = L.control({ position: 'topright' });
 
-            controlLayers.addTo(map);
+            operatorFilterControl.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                div.innerHTML = `
+                    <select id="operatorFilter">
+                        <option value="all">Todas as Operadoras</option>
+                        <option value="01">Vodafone</option>
+                        <option value="02">DIGI</option>
+                        <option value="03">NOS</option>
+                        <option value="06">MEO</option>
+                    </select>
+                `;
+                return div;
+            };
 
+            operatorFilterControl.addTo(map);
+
+            // Adiciona evento para atualizar o filtro ao alterar a seleção
+            document.getElementById('operatorFilter').addEventListener('change', function (event) {
+                selectedOperator = event.target.value;
+                filterMarkers(selectedOperator);
+            });
+
+            // Função para filtrar os marcadores de acordo com a operadora selecionada
+            function filterMarkers(operator) {
+                markerCluster.clearLayers(); // Limpa todos os marcadores
+
+                Object.values(markers).forEach(markerData => {
+                    if (operator === 'all' || markerData.mncs.includes(operator)) {
+                        const popupContent = generatePopupContent(markerData);
+                        const marker = L.marker(markerData.latLng, {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15],
+                                popupAnchor: [0, -15]
+                            }),
+                            title: 'Operadoras neste suporte'
+                        }).bindPopup(popupContent);
+
+                        markerCluster.addLayer(marker);
+                    }
+                });
+
+                map.addLayer(markerCluster);
+            }
+
+            // Adiciona controle de Modo Debug
+            var debugControl = L.control({ position: 'topright' });
+
+            debugControl.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                div.innerHTML = '<input type="checkbox" id="debugModeCheckbox">' +
+                    '<label for="debugModeCheckbox">Modo Debug</label>';
+                return div;
+            };
+
+            debugControl.addTo(map);
+
+            // Atualizando o Modo Debug ao alterar a caixa de seleção
             document.getElementById('debugModeCheckbox').addEventListener('change', function (event) {
                 debugMode = event.target.checked;
                 createMarkers();
