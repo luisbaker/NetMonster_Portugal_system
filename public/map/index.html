@@ -94,14 +94,13 @@
             var markers = {};
             var markerCluster = L.markerClusterGroup();
 
-            var debugMode = false;
             var selectedOperator = 'all'; // Operadora inicialmente selecionada
 
-            function addMarker(loc, mnc, apiResponse) {
+            function addMarker(loc, mnc) {
                 const coords = `${loc.latitude},${loc.longitude}`;
 
                 if (!markers[coords]) {
-                    markers[coords] = { latLng: [loc.latitude, loc.longitude], mncs: [], technology: {}, debugInfo: [] };
+                    markers[coords] = { latLng: [loc.latitude, loc.longitude], mncs: [], technology: {} };
                 }
 
                 if (!markers[coords].mncs.includes(mnc)) {
@@ -122,15 +121,10 @@
                         markers[coords].technology[mnc]['4G'].push(band);
                     }
                 }
-
-                if (debugMode) {
-                    markers[coords].debugInfo.push(apiResponse);
-                }
             }
 
             function generatePopupContent(markerData) {
                 var popupContent = '<b>Operadoras neste suporte:</b><br>';
-                var allFrequenciesZero = true; // Flag para verificar se todas as frequências são zero
 
                 Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
                     if (techInfo['2G'] || techInfo['3G'] || techInfo['4G'].length > 0) {
@@ -148,26 +142,9 @@
                         if (techInfo['4G'].length > 0) {
                             const uniqueBands = [...new Set(techInfo['4G'])]; // Remove bandas duplicadas
                             popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Frequências 4G: ${uniqueBands.join(', ')}<br>`;
-                            // Verifica se há pelo menos uma frequência 4G diferente de 0
-                            if (techInfo['4G'].some(band => band !== '0')) {
-                                allFrequenciesZero = false;
-                            }
                         }
                     }
                 });
-
-                // Adiciona a mensagem "Sinal 4G detetado mas dados incompletos" apenas se todas as frequências 4G forem zero
-                if (allFrequenciesZero) {
-                    popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;Sinal 4G detetado mas dados incompletos<br>`;
-                }
-
-                // Adiciona informações de depuração
-                if (debugMode && markerData.debugInfo && markerData.debugInfo.length > 0) {
-                    popupContent += '<br><b>Debug API:</b><br>';
-                    markerData.debugInfo.forEach(info => {
-                        popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${info}<br>`;
-                    });
-                }
 
                 return popupContent;
             }
@@ -188,11 +165,6 @@
                             title: 'Operadoras neste suporte'
                         }).bindPopup(popupContent);
 
-                        // Adiciona o evento de clique ao marcador
-                        marker.on('click', function () {
-                            this.openPopup();
-                        });
-
                         markerCluster.addLayer(marker);
                     }
                 });
@@ -205,7 +177,7 @@
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(loc => {
-                            addMarker(loc, mnc, JSON.stringify(loc));
+                            addMarker(loc, mnc);
                         });
                         createMarkers();
                     })
@@ -268,24 +240,6 @@
 
                 map.addLayer(markerCluster);
             }
-
-            // Adiciona controle de Modo Debug
-            var debugControl = L.control({ position: 'topright' });
-
-            debugControl.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-                div.innerHTML = '<input type="checkbox" id="debugModeCheckbox">' +
-                    '<label for="debugModeCheckbox">Modo Debug</label>';
-                return div;
-            };
-
-            debugControl.addTo(map);
-
-            // Atualizando o Modo Debug ao alterar a caixa de seleção
-            document.getElementById('debugModeCheckbox').addEventListener('change', function (event) {
-                debugMode = event.target.checked;
-                createMarkers();
-            });
         });
     </script>
 </body>
