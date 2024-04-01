@@ -58,7 +58,7 @@
 
     <div id="developmentNotice">
         <span id="closeButton">&times;</span>
-        <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
+        <p>O mapa estÃ¡ em desenvolvimento. Alguns recursos podem nÃ£o estar disponÃ­veis.<br>Equipa: Baker Telekom</p>
         <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
     </div>
 
@@ -74,7 +74,7 @@
             var map = L.map('map').setView([39.3999, -8.2245], 6);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: 'Â© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
             var markerColors = {
@@ -118,12 +118,12 @@
                 if (loc.frequency !== 0) {
                     if (loc.frequency && !markers[coords].technology[mnc]['4G'].includes(loc.frequency.toString())) {
                         const band = frequencyMapping[mnc] && frequencyMapping[mnc][loc.frequency.toString()];
-                        if (band && !markers[coords].technology[mnc]['4G'].includes(band)) { // Verifica se a banda já está presente
+                        if (band && !markers[coords].technology[mnc]['4G'].includes(band)) { // Verifica se a banda jÃ¡ estÃ¡ presente
                             markers[coords].technology[mnc]['4G'].push(band);
                         }
                     }
                 } else if (loc.frequency === 0 && markers[coords].technology[mnc]['4G'].length === 0) {
-                    // Se a frequência for 0 e não houver outras frequências disponíveis, então mostra "Signal 4G dectetado mas dados incompletos"
+                    // Se a frequÃªncia for 0 e nÃ£o houver outras frequÃªncias disponÃ­veis, entÃ£o mostra "Signal 4G dectetado mas dados incompletos"
                     markers[coords].technology[mnc]['4G'] = ['Signal 4G dectetado mas dados incompletos'];
                 }
 
@@ -137,7 +137,7 @@
 
                 Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
                     const operatorName = { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc];
-                    const frequencies = techInfo['4G'].length > 0 ? `Frequências 4G: ${techInfo['4G'].join(', ')}` : '';
+                    const frequencies = techInfo['4G'].length > 0 ? `FrequÃªncias 4G: ${techInfo['4G'].join(', ')}` : '';
                     const enb = techInfo['enb'] !== '' ? `ENB: ${techInfo['enb']}` : '';
                     const ranSharing = findRANSharing(markerData, mnc);
 
@@ -244,13 +244,13 @@
 
             operatorFilterControl.addTo(map);
 
-            // Adiciona evento para atualizar o filtro ao alterar a seleção
+            // Adiciona evento para atualizar o filtro ao alterar a seleÃ§Ã£o
             document.getElementById('operatorFilter').addEventListener('change', function (event) {
                 selectedOperator = event.target.value;
                 filterMarkers(selectedOperator);
             });
 
-            // Função para filtrar os marcadores de acordo com a operadora selecionada
+            // FunÃ§Ã£o para filtrar os marcadores de acordo com a operadora selecionada
             function filterMarkers(operator) {
                 markerCluster.clearLayers(); // Limpa todos os marcadores
 
