@@ -1,18 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa</title>
-    <!-- Inclua as folhas de estilo e scripts do Leaflet aqui -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
         #map {
-            height: 100vh;
-            /* Preenche toda a altura da tela */
+            height: calc(100% - 40px);
+        }
+
+        #developmentNotice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
+        .leaflet-control {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .leaflet-control-layers {
+            padding: 10px;
         }
     </style>
 </head>
@@ -20,61 +56,166 @@
 <body>
     <div id="map"></div>
 
+<div id="developmentNotice">
+    <span id="closeButton">&times;</span>
+    <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
+    <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
+</div>
+
     <script>
-        // Inicializar o mapa
-        var map = L.map('map').setView([38.736946, -9.142685], 9);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        document.addEventListener('DOMContentLoaded', function () {
+            var closeButton = document.getElementById('closeButton');
+            var developmentNotice = document.getElementById('developmentNotice');
 
-        // Função para carregar pontos da API
-        function loadAPIPoints() {
-            var apiURL = 'http://localhost:8080/api/map.js';
+            closeButton.addEventListener('click', function () {
+                developmentNotice.style.display = 'none';
+            });
 
-            fetch(apiURL)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('API Data:', data);
+            var map = L.map('map').setView([39.3999, -8.2245], 6);
 
-                    // Iterar sobre os dados da API e adicionar marcadores ao mapa
-                    data.forEach(function (point) {
-                        console.log('Point:', point);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-                        // Certifique-se de que as coordenadas são válidas
-                        var latitude = point['latitude'];
-                        var longitude = point['longitude'];
+            var markerColors = {
+                '01': 'blue',   // Vodafone
+                '02': 'green',  // DIGI
+                '03': 'red',    // NOS
+                '06': 'orange'  // MEO
+            };
 
-                        if (!isNaN(latitude) && !isNaN(longitude)) {
-                            var operatorName = point['operatorName'];
-                            var location = point['location'];
-                            var technologies = point['technologies'];
-                            var frequencies = point['frequencies'];
+            var frequencyMapping = {
+                '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
+                '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '38150': 'B38' },
+                '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7' },
+                '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
+            };
 
-                            var markerContent = "<b>" + operatorName + "</b><br>" +
-                                "Location: " + location + "<br>" +
-                                "Operadoras:<ul>";
+            var markers = {};
+            var markerCluster = L.markerClusterGroup();
 
-                            // Adicionar informações de tecnologias e frequências
-                            technologies.forEach(function (tech, index) {
-                                markerContent += "<li>" + tech + ": " + frequencies[index] + "</li>";
-                            });
+            var debugMode = false;
 
-                            markerContent += "</ul>";
+            function addMarker(loc, mnc, apiResponse) {
+                const coords = `${loc.latitude},${loc.longitude}`;
 
-                            // Criar marcador no mapa
-                            L.marker([latitude, longitude])
-                                .addTo(map)
-                                .bindPopup(markerContent);
-                        } else {
-                            console.error('Invalid latitude or longitude for point:', point);
+                if (!markers[coords]) {
+                    markers[coords] = { latLng: [loc.latitude, loc.longitude], mncs: [], technology: {}, debugInfo: [] };
+                }
+
+                if (!markers[coords].mncs.includes(mnc)) {
+                    markers[coords].mncs.push(mnc);
+                }
+
+                if (!markers[coords].technology[mnc]) {
+                    markers[coords].technology[mnc] = { '2G': false, '3G': false, '4G': [] };
+                }
+
+                if (!markers[coords].technology[mnc][loc.technology]) {
+                    markers[coords].technology[mnc][loc.technology] = true;
+                }
+
+                if (loc.frequency && !markers[coords].technology[mnc]['4G'].includes(loc.frequency.toString())) {
+                    const band = frequencyMapping[mnc] && frequencyMapping[mnc][loc.frequency.toString()];
+                    if (band) {
+                        markers[coords].technology[mnc]['4G'].push(band);
+                    }
+                }
+
+                if (debugMode) {
+                    markers[coords].debugInfo.push(apiResponse);
+                }
+            }
+
+            function generatePopupContent(markerData) {
+                var popupContent = '<b>Operadoras neste suporte:</b><br>';
+
+                Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
+                    if (techInfo['2G'] || techInfo['3G'] || techInfo['4G'].length > 0) {
+                        const operatorName = { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc];
+                        popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${operatorName}:<br>`;
+
+                        if (techInfo['2G']) {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2G capturado<br>`;
                         }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching API:', error);
-                });
-        }
 
-        // Chamar a função para carregar pontos da API
-        loadAPIPoints();
+                        if (techInfo['3G']) {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3G capturado<br>`;
+                        }
+
+                        if (techInfo['4G'].length > 0) {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Frequências 4G: ${techInfo['4G'].join(', ')}<br>`;
+                        }
+                    }
+                });
+
+                if (debugMode && markerData.debugInfo.length > 0) {
+                    popupContent += `<br><b>Debug API:</b><br>`;
+                    markerData.debugInfo.forEach(info => {
+                        popupContent += `${info}<br>`;
+                    });
+                }
+
+                return popupContent;
+            }
+
+            function createMarkers() {
+                markerCluster.clearLayers();
+
+                Object.values(markers).forEach(markerData => {
+                    const popupContent = generatePopupContent(markerData);
+                    const marker = L.marker(markerData.latLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15],
+                            popupAnchor: [0, -15]
+                        }),
+                        title: 'Operadoras neste suporte'
+                    }).bindPopup(popupContent);
+
+                    markerCluster.addLayer(marker);
+                });
+
+                map.addLayer(markerCluster);
+            }
+
+            function fetchData(mnc) {
+                fetch(`https://netmonsterpt.ibakerserver.pt/api/cell/${mnc}/268`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(loc => {
+                            addMarker(loc, mnc, JSON.stringify(loc));
+                        });
+                        createMarkers();
+                    })
+                    .catch(error => console.error(error));
+            }
+
+            ['01', '02', '03', '06'].forEach(mnc => {
+                fetchData(mnc);
+            });
+
+            map.on('moveend', function () {
+                createMarkers();
+            });
+
+            var controlLayers = L.control.layers(null, null, { collapsed: false });
+            var debugCheckbox = L.DomUtil.create('input');
+            debugCheckbox.type = 'checkbox';
+            debugCheckbox.id = 'debugModeCheckbox';
+            var debugLabel = L.DomUtil.create('label');
+            debugLabel.htmlFor = 'debugModeCheckbox';
+            debugLabel.innerText = 'Modo Debug';
+            controlLayers.addOverlay(debugCheckbox, debugLabel);
+
+            controlLayers.addTo(map);
+
+            document.getElementById('debugModeCheckbox').addEventListener('change', function (event) {
+                debugMode = event.target.checked;
+                createMarkers();
+            });
+        });
     </script>
 </body>
 
