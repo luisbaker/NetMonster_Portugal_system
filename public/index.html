@@ -5,63 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NetMonster Portugal</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <img src="/img/logo.png" alt="NetMonster Logo" width="120">
-      <h1>NetMonster Portugal</h1>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="/img/logo.png" alt="Logo da NetMonster Portugal" width="80">
+        <h1>NetMonster Portugal</h1>
+      </div>
+      <nav class="navbar">
+        <ul>
+          <li><a href="#ultimas-importacoes">Importações</a></li>
+          <li><a href="https://netmonsterpt.ibakerserver.pt/pesquisa.html">Pesquisa</a></li>
+          <li><a href="#top-usuarios">Usuários</a></li>
+          <li><a href="#top-smartphones">Smartphones</a></li>
+          <li><a href="https://netmonsterpt.ibakerserver.pt/map/s">Mapa</a></li>
+        </ul>
+      </nav>
     </div>
-    <p>Confira as estatísticas das antenas descobertas em Portugal</p>
   </header>
 
-  <section class="statistics-section">
-    <div class="column">
-      <h2>Últimas Importações</h2>
-      <ul id="lastImportsList"></ul>
-      <h2>Estatísticas por Operador</h2>
-      <ul id="operatorStatsList"></ul>
+  <main class="main-content">
+    <section id="ultimas-importacoes" class="statistics-section">
+      <div class="container">
+        <h2>Últimas Importações</h2>
+        <ul id="lastImportsList"></ul>
+      </div>
+    </section>
+
+    <section id="estatisticas-operador" class="statistics-section">
+      <div class="container">
+        <h2>Estatísticas por Operador</h2>
+        <ul id="operatorStatsList"></ul>
+      </div>
+    </section>
+
+    <section id="top-usuarios" class="statistics-section">
+      <div class="container">
+        <h2>Top Usuários</h2>
+        <ul id="topUsersList"></ul>
+      </div>
+    </section>
+
+    <section id="top-smartphones" class="statistics-section">
+      <div class="container">
+        <h2>Top Smartphones</h2>
+        <ul id="topSmartphonesList"></ul>
+      </div>
+    </section>
+
+    <section id="mapa-antenas" class="map-section">
+      <div class="container">
+        <h2>Mapa de Antenas</h2>
+        <iframe src="https://netmonsterpt.ibakerserver.pt/map/" frameborder="0" width="100%" height="400" aria-label="Mapa de Antenas"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Direitos Autorais © 2024 NetMonster Portugal</p>
     </div>
-    <div class="column">
-      <h2>Top Usuários</h2>
-      <ul id="topUsersList"></ul>
-      <h2>Top Smartphones</h2>
-      <ul id="topSmartphonesList"></ul>
-    </div>
-  </section>
-  <div id="direitosAutorais">
-    <script src="js/direitosAutorais.js" defer></script>
-  </div>
+  </footer>
 
   <script>
-    // Function to fetch data from the API
     async function fetchData() {
       try {
         const response = await fetch('/api/stats.js');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
 
-        // Update the lists and circles with the received data
         updateList('lastImportsList', data.lastImports);
         updateList('operatorStatsList', data.operatorStats);
         updateList('topUsersList', data.topUsers);
         updateList('topSmartphonesList', data.topSmartphones);
-
-        // Add code to update circles if needed
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     }
 
-    // Function to update a list with data
     function updateList(listId, items) {
       const list = document.getElementById(listId);
-
-      // Clear existing items
       list.innerHTML = '';
-
-      // Add new items to the list
       items.forEach(item => {
         const li = document.createElement('li');
         li.textContent = item;
@@ -69,7 +99,6 @@
       });
     }
 
-    // Call the fetchData function when the page loads
     window.addEventListener('load', fetchData);
   </script>
 </body>

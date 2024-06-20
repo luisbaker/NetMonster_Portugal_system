@@ -1,41 +1,40 @@
-# NetMonster Portugal Core System
+# NetMonster Portugal Sistema Core
 
-Development Status: Alpha
+Status do desenvolvimento: alpha
 
-## NetMonster Portugal - Frontend System Overview
+NetMonster Portugal - Sistema de Frontend e Explicação
 
-**Simple Description:**
+**Descrição Simplificada:**
 
-NetMonster Portugal manages the collection and processing of location data, sending it to the national carriers' databases. This system includes:
+O NetMonster Portugal gerencia a coleta e processamento de dados de localização, enviando-os para as bases de dados das operadoras nacionais. Este sistema inclui:
 
-**Features:**
+**Funcionalidades:**
 
-1. **Regular NTM Updates:**
-   - Maintains online a specific NTM file for each carrier, with regular updates.
+1. **Atualizações Regulares do NTM:**
+   - Mantém online um arquivo NTM específico para cada operadora, com atualizações regulares.
 
-2. **Location Data Submission:**
-   - Users submit information in JSON format through the endpoint.
+2. **Envio de Dados de Localização:**
+   - Usuários submetem informações em JSON através do endpoint.
 
-3. **Integration with Databases:**
-   - Facilitates efficient integration by directing information to each carrier's databases.
+3. **Integração com Bases de Dados:**
+   - Facilita a integração eficiente direcionando as informações para as bases de dados de cada operadora.
 
-4. **Flexible Processing:**
-   - Allows for custom decisions in processing the information.
+4. **Processamento Flexível:**
+   - Permite decisões personalizadas no processamento das informações.
 
-**Daily Usage Information:**
+**Informações de Utilização Diária:**
 
-   - Provides data on daily active users.
-   - Records most-used smartphone models by brand.
+   - Fornece dados sobre utilizadores ativos diariamente.
+   - Registra modelos de smartphones mais usados por marca.
 
-**Model Registration by Carriers:**
+**Registo de Modelos por Operadoras:**
 
-   - Captures and registers the most-used smartphone models for each carrier.
-   - Includes relevant statistics for Vodafone Portugal, NOS, MEO, and Digi Portugal.
+   - Captura e regista os modelos de smartphones mais usados por cada operadora.
+   - Inclui estatísticas relevantes para Vodafone Portugal, NOS, MEO e Digi Portugal.
 
 **Frontend NetMonster Portugal:**
-   - Interface system displaying national statistics and specific information for Vodafone Portugal, NOS, MEO, and Digi Portugal.
-   - Provides access to the databases of each national carrier.
-   - Includes a map system for enhanced visualization.
+   - Sistema de interface exibindo estatísticas nacionais e informações específicas para Vodafone Portugal, NOS, MEO e Digi Portugal.
+   - Permite acesso às bases de dados de cada operadora nacional.
 
 # Project Setup and Start Guide
 

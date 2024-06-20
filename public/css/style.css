@@ -1,73 +1,152 @@
+/* Estilos gerais */
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: #333; /* Fundo escuro */
+  color: #fff; /* Texto branco */
+  transition: background-color 0.3s, color 0.3s; /* Transição suave para mudanças de tema */
 }
 
-.header-content {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Estilos do cabeçalho */
+.header {
+  background-color: #2ecc71; /* Verde como cor de fundo */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
   display: flex;
   align-items: center;
-  justify-content: start;
-  padding-left: 10px;
 }
 
-header {
-  background-color: #ffffff;
-  color: #333333;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-header img {
+.logo img {
+  vertical-align: middle;
   margin-right: 10px;
 }
 
-.statistics-section {
+.logo h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  justify-content: space-between;
-  background-color: #ffffff; 
-  margin: 20px auto;
+  gap: 10px;
+}
+
+.navbar ul li {
+  display: inline;
+}
+
+.navbar ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.navbar ul li a:hover, .navbar ul li a:focus {
+  background-color: #27ae60; /* Verde mais escuro quando hover */
+  border-radius: 5px;
+  outline: none;
+}
+
+/* Estilos do conteúdo principal */
+.main-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
   padding: 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
-.column {
-  width: 45%; 
+.statistics-section, .map-section {
+  background-color: #444; /* Fundo mais escuro para seções de estatísticas e mapa */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#direitosAutorais {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #ffffff;
+.statistics-section h2, .map-section h2 {
+  color: #2ecc71; /* Verde para títulos de seção */
+}
+
+#mapa-antenas {
+  grid-column: span 2;
+}
+
+/* Estilos do rodapé */
+.footer {
+  background-color: #2ecc71; /* Verde como cor de fundo */
   text-align: center;
-  padding: 10px;
-  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
+  color: #fff; /* Texto branco */
 }
 
-canvas {
-  border: 1px solid #dddddd;
-  border-radius: 2px;
-  margin: 10px;
-  width: 300px;
-  height: 300px;
+.footer p {
+  margin: 0;
 }
 
-h1, h2, p {
-  color: #333333;
+/* Media Queries para responsividade */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .navbar ul li {
+    display: block;
+  }
+
+  .navbar ul li a {
+    display: block;
+    padding: 10px 0;
+  }
+
+  .logo h1 {
+    margin-top: 10px;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  #mapa-antenas {
+    grid-column: 1;
+  }
 }
 
-.charts-container {
-  display: flex;
-  justify-content: space-around;
+/* Modo escuro */
+body.dark-mode {
+  background-color: #111; /* Fundo ainda mais escuro no modo escuro */
+  color: #ddd; /* Texto mais claro no modo escuro */
 }
 
-#cookie-banner {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #f8f9fa;
-  text-align: center;
-  padding: 10px 0;
+.body.dark-mode .header {
+  background-color: #27ae60; /* Verde como cor de fundo no modo escuro */
+}
+
+.body.dark-mode .statistics-section, .body.dark-mode .map-section {
+  background-color: #333; /* Fundo mais escuro para seções de estatísticas e mapa no modo escuro */
+}
+
+.body.dark-mode .footer {
+  background-color: #27ae60; /* Verde como cor de fundo no modo escuro */
 }

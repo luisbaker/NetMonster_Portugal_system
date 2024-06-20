@@ -11,48 +11,50 @@
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <style>
-        body,
-        html {
+        /* Estilos gerais */
+        body, html {
             height: 100%;
             margin: 0;
             padding: 0;
-            position: relative;
+            background-color: #222; /* Cor de fundo escura para toda a página */
+            color: white; /* Cor do texto padrão */
         }
 
+        /* Estilos para o mapa Leaflet */
         #map {
-            height: calc(100% - 40px);
+            height: calc(100% - 40px); /* Ajuste a altura conforme necessário */
         }
 
-        #developmentNotice {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-
-        #closeButton {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            cursor: pointer;
+        .leaflet-container {
+            filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(85%);
+            background-color: #333; /* Cor de fundo escura para o mapa */
         }
 
         .leaflet-control {
-            background-color: white;
+            color: white; /* Altera a cor do texto dos controles para branco */
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente para controles */
             border-radius: 5px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
         }
 
         .leaflet-control-layers {
             padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente para painel de camadas */
+            border-radius: 5px;
+        }
+
+        .leaflet-control-layers-expanded {
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Borda branca para camadas expandidas */
+        }
+
+        .leaflet-popup-content {
+            color: white; /* Cor do texto dos popups */
+            background-color: rgba(0, 0, 0, 0.7); /* Cor de fundo semi-transparente para popups */
+            border-radius: 5px;
+            padding: 10px;
         }
     </style>
 </head>
-
 <body>
     <div id="map"></div>
 
@@ -190,8 +192,8 @@
                         if (popupContent !== '') {
                             const marker = L.marker(markerData.latLng, {
                                 icon: L.icon({
-                                    iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
-                                    iconSize: [30, 30],
+                                    iconUrl: 'https://ibakerserver.pt/img/file.png',
+                                    iconSize: [100, 100],
                                     iconAnchor: [15, 15],
                                     popupAnchor: [0, -15]
                                 }),
