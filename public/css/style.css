@@ -1,0 +1,73 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding-left: 10px;
+}
+
+header {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header img {
+  margin-right: 10px;
+}
+
+.statistics-section {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff; 
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.column {
+  width: 45%; 
+}
+
+#direitosAutorais {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+canvas {
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  margin: 10px;
+  width: 300px;
+  height: 300px;
+}
+
+h1, h2, p {
+  color: #333333;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+#cookie-banner {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 10px 0;
+}

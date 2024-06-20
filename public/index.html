@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetMonster Portugal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <img src="/img/logo.png" alt="NetMonster Logo" width="120">
+      <h1>NetMonster Portugal</h1>
+    </div>
+    <p>Confira as estatísticas das antenas descobertas em Portugal</p>
+  </header>
+
+  <section class="statistics-section">
+    <div class="column">
+      <h2>Últimas Importações</h2>
+      <ul id="lastImportsList"></ul>
+      <h2>Estatísticas por Operador</h2>
+      <ul id="operatorStatsList"></ul>
+    </div>
+    <div class="column">
+      <h2>Top Usuários</h2>
+      <ul id="topUsersList"></ul>
+      <h2>Top Smartphones</h2>
+      <ul id="topSmartphonesList"></ul>
+    </div>
+  </section>
+  <div id="direitosAutorais">
+    <script src="js/direitosAutorais.js" defer></script>
+  </div>
+
+  <script>
+    // Function to fetch data from the API
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/stats.js');
+        const data = await response.json();
+
+        // Update the lists and circles with the received data
+        updateList('lastImportsList', data.lastImports);
+        updateList('operatorStatsList', data.operatorStats);
+        updateList('topUsersList', data.topUsers);
+        updateList('topSmartphonesList', data.topSmartphones);
+
+        // Add code to update circles if needed
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    // Function to update a list with data
+    function updateList(listId, items) {
+      const list = document.getElementById(listId);
+
+      // Clear existing items
+      list.innerHTML = '';
+
+      // Add new items to the list
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    // Call the fetchData function when the page loads
+    window.addEventListener('load', fetchData);
+  </script>
+</body>
+</html>

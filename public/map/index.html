@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        #map {
+            height: calc(100% - 40px);
+        }
+
+        #developmentNotice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
+        .leaflet-control {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .leaflet-control-layers {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <div id="developmentNotice">
+        <span id="closeButton">&times;</span>
+        <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
+        <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var closeButton = document.getElementById('closeButton');
+            var developmentNotice = document.getElementById('developmentNotice');
+
+            closeButton.addEventListener('click', function () {
+                developmentNotice.style.display = 'none';
+            });
+
+            var map = L.map('map').setView([39.3999, -8.2245], 6);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            var markerColors = {
+                '01': 'blue',   // Vodafone
+                '02': 'green',  // DIGI
+                '03': 'red',    // NOS
+                '06': 'orange'  // MEO
+            };
+
+            var frequencyMapping = {
+                '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
+                '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '2775': 'B7', '38150': 'B38' },
+                '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7' },
+                '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
+            };
+
+            var markers = {};
+            var markerCluster = L.markerClusterGroup();
+
+            var selectedOperator = 'all'; // Operadora inicialmente selecionada
+
+            function addMarker(loc, mnc) {
+                const coords = `${loc.latitude},${loc.longitude}`;
+
+                if (!markers[coords]) {
+                    markers[coords] = { latLng: [loc.latitude, loc.longitude], mncs: [], technology: {} };
+                }
+
+                if (!markers[coords].mncs.includes(mnc)) {
+                    markers[coords].mncs.push(mnc);
+                }
+
+                if (!markers[coords].technology[mnc]) {
+                    markers[coords].technology[mnc] = { '2G': false, '3G': false, '4G': [], 'enb': '' };
+                }
+
+                if (!markers[coords].technology[mnc][loc.technology]) {
+                    markers[coords].technology[mnc][loc.technology] = true;
+                }
+
+                if (loc.frequency !== 0) {
+                    if (loc.frequency && !markers[coords].technology[mnc]['4G'].includes(loc.frequency.toString())) {
+                        const band = frequencyMapping[mnc] && frequencyMapping[mnc][loc.frequency.toString()];
+                        if (band && !markers[coords].technology[mnc]['4G'].includes(band)) { // Verifica se a banda já está presente
+                            markers[coords].technology[mnc]['4G'].push(band);
+                        }
+                    }
+                } else if (loc.frequency === 0 && markers[coords].technology[mnc]['4G'].length === 0) {
+                    // Se a frequência for 0 e não houver outras frequências disponíveis, então mostra "Signal 4G dectetado mas dados incompletos"
+                    markers[coords].technology[mnc]['4G'] = ['Signal 4G dectetado mas dados incompletos'];
+                }
+
+                if (loc.enb && markers[coords].technology[mnc]['enb'] === '') {
+                    markers[coords].technology[mnc]['enb'] = loc.enb;
+                }
+            }
+
+            function generatePopupContent(markerData) {
+                var popupContent = '';
+
+                Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
+                    const operatorName = { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc];
+                    const frequencies = techInfo['4G'].length > 0 ? `Frequências 4G: ${techInfo['4G'].join(', ')}` : '';
+                    const enb = techInfo['enb'] !== '' ? `ENB: ${techInfo['enb']}` : '';
+                    const ranSharing = findRANSharing(markerData, mnc);
+
+                    if (frequencies !== '') {
+                        popupContent += `<b>${operatorName}:</b><br>`;
+                        if (techInfo['2G']) {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;2G capturado<br>`;
+                        }
+                        if (techInfo['3G']) {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;3G capturado<br>`;
+                        }
+                        popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${frequencies}<br>`;
+                        if (enb !== '') {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${enb}<br>`;
+                        }
+                        if (ranSharing !== '') {
+                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${ranSharing}<br>`;
+                        }
+                    }
+                });
+
+                if (popupContent !== '') {
+                    popupContent = 'Operadoras neste suporte:<br>' + popupContent;
+                }
+
+                return popupContent;
+            }
+
+            function findRANSharing(markerData, currentMNC) {
+                const enbToCheck = markerData.technology[currentMNC]['enb'];
+                if (enbToCheck === '') return '';
+
+                const operatorsWithSameENB = Object.entries(markerData.technology)
+                    .filter(([mnc, techInfo]) => techInfo['enb'] === enbToCheck && mnc !== currentMNC)
+                    .map(([mnc]) => {
+                        return { mnc, operatorName: { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc] };
+                    });
+
+                if (operatorsWithSameENB.length === 0) return '';
+
+                return `RAN Sharing com: ${operatorsWithSameENB.map(op => op.operatorName).join(', ')}`;
+            }
+
+            function createMarkers() {
+                markerCluster.clearLayers();
+
+                Object.values(markers).forEach(markerData => {
+                    if (selectedOperator === 'all' || markerData.mncs.includes(selectedOperator)) {
+                        const popupContent = generatePopupContent(markerData);
+                        if (popupContent !== '') {
+                            const marker = L.marker(markerData.latLng, {
+                                icon: L.icon({
+                                    iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
+                                    iconSize: [30, 30],
+                                    iconAnchor: [15, 15],
+                                    popupAnchor: [0, -15]
+                                }),
+                                title: 'Operadoras neste suporte'
+                            }).bindPopup(popupContent);
+                            markerCluster.addLayer(marker);
+                        }
+                    }
+                });
+
+                map.addLayer(markerCluster);
+            }
+
+            function fetchData(mnc) {
+                fetch(`https://netmonsterpt.ibakerserver.pt/api/cell/${mnc}/268`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(loc => {
+                            addMarker(loc, mnc);
+                        });
+                        createMarkers();
+                    })
+                    .catch(error => console.error(error));
+            }
+
+            ['01', '02', '03', '06'].forEach(mnc => {
+                fetchData(mnc);
+            });
+
+            map.on('moveend', function () {
+                createMarkers();
+            });
+
+            // Adiciona controle de filtro por operadora
+            var operatorFilterControl = L.control({ position: 'topright' });
+
+            operatorFilterControl.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                div.innerHTML = `
+                    <select id="operatorFilter">
+                        <option value="all">Todas as Operadoras</option>
+                        <option value="01">Vodafone</option>
+                        <option value="02">DIGI</option>
+                        <option value="03">NOS</option>
+                        <option value="06">MEO</option>
+                    </select>
+                `;
+                return div;
+            };
+
+            operatorFilterControl.addTo(map);
+
+            // Adiciona evento para atualizar o filtro ao alterar a seleção
+            document.getElementById('operatorFilter').addEventListener('change', function (event) {
+                selectedOperator = event.target.value;
+                filterMarkers(selectedOperator);
+            });
+
+            // Função para filtrar os marcadores de acordo com a operadora selecionada
+            function filterMarkers(operator) {
+                markerCluster.clearLayers(); // Limpa todos os marcadores
+
+                Object.values(markers).forEach(markerData => {
+                    if (operator === 'all' || markerData.mncs.includes(operator)) {
+                        const popupContent = generatePopupContent(markerData);
+                        if (popupContent !== '') {
+                            const marker = L.marker(markerData.latLng, {
+                                icon: L.icon({
+                                    iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
+                                    iconSize: [30, 30],
+                                    iconAnchor: [15, 15],
+                                    popupAnchor: [0, -15]
+                                }),
+                                title: 'Operadoras neste suporte'
+                            }).bindPopup(popupContent);
+                            markerCluster.addLayer(marker);
+                        }
+                    }
+                });
+
+                map.addLayer(markerCluster);
+            }
+        });
+    </script>
+</body>
+
+</html>
