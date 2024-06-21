@@ -26,7 +26,7 @@ export const MAPPING = {
 		technology: ["lte", "4g", "lte", "lte-a", "lte-a-pro"],
 	},
 	nr: {
-		format: "5G;MCC;MNC;NCI;TAC;XXX;PCI;Lat;Lon;Location;ARFCN",
+		format: "5G;MCC;MNC;NCI;TAC;gNB;PCI;Lat;Lon;Location;ARFCN",
 		technology: ["nr", "5g"],
 	},
 	cdma: {
@@ -35,7 +35,7 @@ export const MAPPING = {
 	},
 };
 
-/**
+/**tyu
  * Normalizes the given technology string by converting it to lowercase and removing non-word characters.
  *
  * @param {string} technology - The technology string to be normalized.
