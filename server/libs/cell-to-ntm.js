@@ -44,11 +44,12 @@ const FIELD_MAPPING = {
 	CI: (cell) => cell?.cid?.toString?.(),
 	// Tracking area code
 	TAC: (cell) => cell?.area?.toString?.(),
-	// Evolved node B
-	// TODO: there's no documentation about this `enb` field
-	// so we'll have to check if it's correct, in the meanwhile
-	// we'll default it to 0
-	eNB: (cell) => cell?.enb?.toString?.() || "0",
+    // Evolved node B
+	// Calculating eNB from CID
+	eNB: (cell) => {
+		const cid = parseInt(cell?.cid, 10);
+		return cid ? Math.floor(cid / 256).toString() : "0";
+	},
 	// Physical cell identifier
 	PCI: (cell) => cell?.code?.toString?.(),
 	// Radio frequency channel number
