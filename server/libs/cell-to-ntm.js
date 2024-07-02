@@ -1,6 +1,6 @@
 import { InvalidFieldValueError, UnknownFieldError, getFormat } from "./ntm.js";
 
-const FIELD_MAPPING = {
+export const FIELD_MAPPING = {
 	// Constant value
 	"2G": () => "2G",
 	// Constant value
@@ -24,9 +24,9 @@ const FIELD_MAPPING = {
 	// Base station identity code
 	BSIC: (cell) => cell?.code?.toString?.(),
 	// Latitude - GPS coordinate
-	Lat: (cell) => cell?.latitude?.toString?.(),
+	Lat: (cell) => cell?.latitude?.toString?.() || "0",
 	// Longitude - GPS coordinate
-	Lon: (cell) => cell?.longitude?.toString?.(),
+	Lon: (cell) => (cell?.longitude || cell?.longituide)?.toString?.() || "0",
 	// Description of the location
 	Location: (cell) => cell?.location?.toString?.(),
 	// Radio frequency channel number
@@ -44,10 +44,10 @@ const FIELD_MAPPING = {
 	CI: (cell) => cell?.cid?.toString?.(),
 	// Tracking area code
 	TAC: (cell) => cell?.area?.toString?.(),
-    // Evolved node B
+	// Evolved node B
 	// Calculating eNB from CID
 	eNB: (cell) => {
-		const cid = parseInt(cell?.cid, 10);
+		const cid = Number.parseInt(cell?.cid, 10);
 		return cid ? Math.floor(cid / 256).toString() : "0";
 	},
 	// Physical cell identifier
