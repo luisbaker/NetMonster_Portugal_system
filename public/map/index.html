@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-pt">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa</title>
+    <meta name="description" content="Mapa das antenas móveis em Portugal localizadas pelo aplicativo NetMonster. Explore a cobertura das operadoras Vodafone, DIGI, NOS e MEO com informações detalhadas sobre tecnologias 2G, 3G, 4G e 5G.">
+    <title>Mapa das Antenas em Portugal</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -16,63 +16,44 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background-color: #222; /* Cor de fundo escura para toda a p�gina */
-            color: white; /* Cor do texto padr�o */
+            font-family: Arial, sans-serif;
         }
 
         /* Estilos para o mapa Leaflet */
         #map {
-            height: calc(100% - 40px); /* Ajuste a altura conforme necess�rio */
+            height: 100%; /* Ajuste a altura conforme necessário */
         }
 
-        .leaflet-container {
-            filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(85%);
-            background-color: #333; /* Cor de fundo escura para o mapa */
-        }
-
-        .leaflet-control {
-            color: white; /* Altera a cor do texto dos controles para branco */
-            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente para controles */
-            border-radius: 5px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .leaflet-control-layers {
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente para painel de camadas */
-            border-radius: 5px;
-        }
-
-        .leaflet-control-layers-expanded {
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Borda branca para camadas expandidas */
+        /* Estilos para os popups */
+        .leaflet-popup-content-wrapper {
+            width: 280px; /* Largura do popup */
         }
 
         .leaflet-popup-content {
-            color: white; /* Cor do texto dos popups */
-            background-color: rgba(0, 0, 0, 0.7); /* Cor de fundo semi-transparente para popups */
-            border-radius: 5px;
-            padding: 10px;
+            font-size: 14px; /* Tamanho da fonte */
+        }
+
+        .popup-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .popup-section {
+            margin-bottom: 6px;
+        }
+
+        /* Estilos para os marcadores */
+        .leaflet-cluster-anim .leaflet-marker-icon {
+            background-color: #fff; /* Cor de fundo dos marcadores */
+            border: 2px solid #3388ff; /* Cor da borda dos marcadores */
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
 
-    <div id="developmentNotice">
-        <span id="closeButton">&times;</span>
-        <p>O mapa está em desenvolvimento. Alguns recursos podem não estar disponíveis.<br>Equipa: Baker Telekom</p>
-        <p>Por favor, relate qualquer problema diretamente a @luiisbaker pelo Telegram.</p>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var closeButton = document.getElementById('closeButton');
-            var developmentNotice = document.getElementById('developmentNotice');
-
-            closeButton.addEventListener('click', function () {
-                developmentNotice.style.display = 'none';
-            });
-
             var map = L.map('map').setView([39.3999, -8.2245], 6);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,7 +70,7 @@
             var frequencyMapping = {
                 '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
                 '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '2775': 'B7', '38150': 'B38' },
-                '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7' },
+                '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7', '641376': 'N78', '156750': 'N28' },
                 '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
             };
 
@@ -110,7 +91,7 @@
                 }
 
                 if (!markers[coords].technology[mnc]) {
-                    markers[coords].technology[mnc] = { '2G': false, '3G': false, '4G': [], 'enb': '' };
+                    markers[coords].technology[mnc] = { '2G': false, '3G': false, '4G': [], '5G': [], 'enb': '', 'gnb': '' };
                 }
 
                 if (!markers[coords].technology[mnc][loc.technology]) {
@@ -118,19 +99,23 @@
                 }
 
                 if (loc.frequency !== 0) {
-                    if (loc.frequency && !markers[coords].technology[mnc]['4G'].includes(loc.frequency.toString())) {
-                        const band = frequencyMapping[mnc] && frequencyMapping[mnc][loc.frequency.toString()];
-                        if (band && !markers[coords].technology[mnc]['4G'].includes(band)) { // Verifica se a banda já está presente
-                            markers[coords].technology[mnc]['4G'].push(band);
+                    const frequencyKey = loc.frequency.toString();
+                    if (frequencyMapping[mnc] && frequencyMapping[mnc][frequencyKey]) {
+                        const band = frequencyMapping[mnc][frequencyKey];
+                        if (!markers[coords].technology[mnc][loc.technology].includes(band)) {
+                            markers[coords].technology[mnc][loc.technology].push(band);
                         }
                     }
-                } else if (loc.frequency === 0 && markers[coords].technology[mnc]['4G'].length === 0) {
-                    // Se a frequência for 0 e não houver outras frequências disponíveis, então mostra "Signal 4G dectetado mas dados incompletos"
-                    markers[coords].technology[mnc]['4G'] = ['Signal 4G dectetado mas dados incompletos'];
+                } else if (loc.frequency === 0 && markers[coords].technology[mnc][loc.technology].length === 0) {
+                    markers[coords].technology[mnc][loc.technology] = ['Sinal detectado mas dados incompletos'];
                 }
 
                 if (loc.enb && markers[coords].technology[mnc]['enb'] === '') {
                     markers[coords].technology[mnc]['enb'] = loc.enb;
+                }
+
+                if (loc.gnb && markers[coords].technology[mnc]['gnb'] === '') {
+                    markers[coords].technology[mnc]['gnb'] = loc.gnb;
                 }
             }
 
@@ -139,30 +124,40 @@
 
                 Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
                     const operatorName = { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc];
-                    const frequencies = techInfo['4G'].length > 0 ? `Frequências 4G: ${techInfo['4G'].join(', ')}` : '';
-                    const enb = techInfo['enb'] !== '' ? `ENB: ${techInfo['enb']}` : '';
+                    const frequencies4G = techInfo['4G'].length > 0 ? `Frequências 4G: ${techInfo['4G'].join(', ')}` : '';
+                    const frequencies5G = techInfo['5G'].length > 0 ? `Sinal 5G standalone detectado: ${techInfo['5G'].join(', ')}` : '';
+                    const enb = techInfo['enb'] !== '' ? `ENB 4G: ${techInfo['enb']}` : '';
+                    const gnb = techInfo['gnb'] !== '' ? `GNB 5G: ${techInfo['gnb']}` : '';
                     const ranSharing = findRANSharing(markerData, mnc);
 
-                    if (frequencies !== '') {
-                        popupContent += `<b>${operatorName}:</b><br>`;
+                    if (frequencies4G !== '' || frequencies5G !== '') {
+                        popupContent += `<div class="popup-header">${operatorName}</div>`;
                         if (techInfo['2G']) {
-                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;2G capturado<br>`;
+                            popupContent += `<div class="popup-section">2G capturado</div>`;
                         }
                         if (techInfo['3G']) {
-                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;3G capturado<br>`;
+                            popupContent += `<div class="popup-section">3G capturado</div>`;
                         }
-                        popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${frequencies}<br>`;
+                        if (frequencies4G !== '') {
+                            popupContent += `<div class="popup-section">${frequencies4G}</div>`;
+                        }
+                        if (frequencies5G !== '') {
+                            popupContent += `<div class="popup-section">${frequencies5G}</div>`;
+                        }
                         if (enb !== '') {
-                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${enb}<br>`;
+                            popupContent += `<div class="popup-section">${enb}</div>`;
+                        }
+                        if (gnb !== '') {
+                            popupContent += `<div class="popup-section">${gnb}</div>`;
                         }
                         if (ranSharing !== '') {
-                            popupContent += `&nbsp;&nbsp;&nbsp;&nbsp;${ranSharing}<br>`;
+                            popupContent += `<div class="popup-section">${ranSharing}</div>`;
                         }
                     }
                 });
 
                 if (popupContent !== '') {
-                    popupContent = 'Operadoras neste suporte:<br>' + popupContent;
+                    popupContent = '<div class="popup-content">' + popupContent + '</div>';
                 }
 
                 return popupContent;
@@ -191,12 +186,6 @@
                         const popupContent = generatePopupContent(markerData);
                         if (popupContent !== '') {
                             const marker = L.marker(markerData.latLng, {
-                                icon: L.icon({
-                                    iconUrl: 'https://ibakerserver.pt/img/file.png',
-                                    iconSize: [100, 100],
-                                    iconAnchor: [15, 15],
-                                    popupAnchor: [0, -15]
-                                }),
                                 title: 'Operadoras neste suporte'
                             }).bindPopup(popupContent);
                             markerCluster.addLayer(marker);
@@ -261,12 +250,6 @@
                         const popupContent = generatePopupContent(markerData);
                         if (popupContent !== '') {
                             const marker = L.marker(markerData.latLng, {
-                                icon: L.icon({
-                                    iconUrl: 'https://cdn.ibakerserver.pt/9Od0lAn.png',
-                                    iconSize: [30, 30],
-                                    iconAnchor: [15, 15],
-                                    popupAnchor: [0, -15]
-                                }),
                                 title: 'Operadoras neste suporte'
                             }).bindPopup(popupContent);
                             markerCluster.addLayer(marker);
@@ -279,5 +262,4 @@
         });
     </script>
 </body>
-
 </html>
