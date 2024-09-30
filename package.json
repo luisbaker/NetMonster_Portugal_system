@@ -13,7 +13,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"express": "^4.19.0",
+		"csv": "^6.3.10",
+		"express": "^4.21.0",
 		"express-async-handler": "^1.2.0",
 		"lodash": "^4.17.21"
 	},
