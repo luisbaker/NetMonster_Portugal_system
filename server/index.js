@@ -7,19 +7,19 @@ const app = express();
 // Middleware para interpretar JSON
 app.use(express.json());
 
-// Middleware para servir arquivos estáticos da pasta public
+// Middleware para servir arquivos estÃ¡ticos da pasta public
 app.use(express.static("public"));
 
 // Importa todas as rotas
 const routes = await fs.readdir(new URL("./routes", import.meta.url));
 
 for (const route of routes) {
-    console.log(`Loading route ${route}`);
-    const routeModule = await import(`./routes/${route}`);
-    app.use(routeModule.router);
+	console.log(`Loading route ${route}`);
+	const routeModule = await import(`./routes/${route}`);
+	app.use(routeModule.router);
 }
 
 // Starts listening on the specified port
 app.listen(process.env.PORT, () => {
-    console.log(`Server is listening on port ${process.env.PORT}`);
+	console.log(`Server is listening on port ${process.env.PORT}`);
 });

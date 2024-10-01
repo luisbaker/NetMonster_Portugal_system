@@ -5,6 +5,7 @@
 	"main": "server/index.js",
 	"type": "module",
 	"scripts": {
+		"fix": "biome check --apply-unsafe .",
 		"lint": "biome ci .",
 		"test": "node --test",
 		"start": "node --env-file .env ./server/index.js"
