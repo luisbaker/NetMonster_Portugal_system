@@ -15,8 +15,8 @@ const routes = await fs.readdir(new URL("./routes", import.meta.url));
 
 for (const route of routes) {
     console.log(`Loading route ${route}`);
-    const { router } = await import(`./routes/${route}`);
-    app.use(router);
+    const routeModule = await import(`./routes/${route}`);
+    app.use(routeModule.router);
 }
 
 // Starts listening on the specified port
