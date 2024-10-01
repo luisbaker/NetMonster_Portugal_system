@@ -1,5 +1,9 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"files": {
+		"ignoreUnknown": true,
+		"ignore": ["node_modules", "public"]
+	},
 	"organizeImports": {
 		"enabled": true
 	},

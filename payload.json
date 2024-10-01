@@ -1,77 +1,75 @@
 {
-   "cells":[
-      {
-         "area":29510,
-         "caught":"31. 12. 2018 22:26",
-         "cid":44041,
-         "code":2147483647,
-         "frequency":500,
-         "latitude":0,
-         "location":"VS Rožnov pod Radhoštěm, 5. května 1556, panelák",
-         "longituide":0,
-         "network":{
-            "mcc":230,
-            "mnc":1
-         },
-         "technology":"GSM"
-      },
-      {
-         "area":31055,
-         "caught":"31. 12. 2018 22:26",
-         "cid":1060353,
-         "code":27,
-         "frequency":449,
-         "latitude":0,
-         "location":"VS Rožnov pod Radhoštěm, Horská 1731, panelák",
-         "longituide":0,
-         "network":{
-            "mcc":230,
-            "mnc":3
-         },
-         "technology":"LTE"
-      },
-      {
-         "area":29510,
-         "caught":"31. 12. 2018 22:26",
-         "cid":242606150,
-         "code":259,
-         "frequency":10787,
-         "latitude":0,
-         "location":"VS Rožnov pod Radhoštěm, Horská 1732, panelák",
-         "longituide":0,
-         "network":{
-            "mcc":230,
-            "mnc":1
-         },
-         "technology":"UMTS"
-      }
-   ],
-   "hints":[
-      {
-         "cids":[
-            1060353
-         ],
-         "locations":[
-            {
-               "latitude":1.0,
-               "longitude":2.0,
-               "ta":4,
-               "accuracy":12
-            },
-            {
-               "latitude":1.1,
-               "longitude":2.2,
-               "ta":7,
-               "accuracy":26
-            }
-         ]
-      }
-   ],
-   "size":3,
-   "date":"31. 12. 2018 22:26",
-   "author":"Name that was filled by the sender",
-   "contact":"Optional way to reach sender",
-   "comment":"Optional comment by the sender",
-   "manufacturer":"Google",
-   "model":"Pixel 9 XL"
+	"cells": [
+		{
+			"area": 29510,
+			"caught": "31. 12. 2018 22:26",
+			"cid": 44041,
+			"code": 2147483647,
+			"frequency": 500,
+			"latitude": 0,
+			"location": "VS Rožnov pod Radhoštěm, 5. května 1556, panelák",
+			"longituide": 0,
+			"network": {
+				"mcc": 230,
+				"mnc": 1
+			},
+			"technology": "GSM"
+		},
+		{
+			"area": 31055,
+			"caught": "31. 12. 2018 22:26",
+			"cid": 1060353,
+			"code": 27,
+			"frequency": 449,
+			"latitude": 0,
+			"location": "VS Rožnov pod Radhoštěm, Horská 1731, panelák",
+			"longituide": 0,
+			"network": {
+				"mcc": 230,
+				"mnc": 3
+			},
+			"technology": "LTE"
+		},
+		{
+			"area": 29510,
+			"caught": "31. 12. 2018 22:26",
+			"cid": 242606150,
+			"code": 259,
+			"frequency": 10787,
+			"latitude": 0,
+			"location": "VS Rožnov pod Radhoštěm, Horská 1732, panelák",
+			"longituide": 0,
+			"network": {
+				"mcc": 230,
+				"mnc": 1
+			},
+			"technology": "UMTS"
+		}
+	],
+	"hints": [
+		{
+			"cids": [1060353],
+			"locations": [
+				{
+					"latitude": 1.0,
+					"longitude": 2.0,
+					"ta": 4,
+					"accuracy": 12
+				},
+				{
+					"latitude": 1.1,
+					"longitude": 2.2,
+					"ta": 7,
+					"accuracy": 26
+				}
+			]
+		}
+	],
+	"size": 3,
+	"date": "31. 12. 2018 22:26",
+	"author": "Name that was filled by the sender",
+	"contact": "Optional way to reach sender",
+	"comment": "Optional comment by the sender",
+	"manufacturer": "Google",
+	"model": "Pixel 9 XL"
 }

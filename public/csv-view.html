@@ -96,14 +96,14 @@
 
         // Função para carregar a lista de arquivos disponíveis
         function loadFileList() {
-            fetch('/files')
+            fetch('/uploads')
                 .then(response => response.json())
                 .then(files => {
                     fileSelect.innerHTML = '';  // Limpa o select antes de adicionar os arquivos
                     files.forEach(file => {
                         const option = document.createElement('option');
-                        option.value = file;
-                        option.textContent = file;
+                        option.value = file.name;
+                        option.textContent = file.original;
                         fileSelect.appendChild(option);
                     });
                 })
@@ -120,7 +120,7 @@
             }
 
             // Lógica para carregar o arquivo (você deve implementar a leitura do arquivo correspondente)
-            fetch(`/public/database/${file}`)
+            fetch(`/upload/${file}`)
                 .then(response => response.text())
                 .then(contents => loadData(contents))
                 .catch(error => alert('Erro ao carregar o arquivo: ' + error));
@@ -136,7 +136,7 @@
             }
 
             const formData = new FormData();
-            formData.append('ntmFile', file);
+            formData.append('file', file);
 
             fetch('/upload', {
                 method: 'POST',
@@ -144,7 +144,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.message);
+                    alert(data.success);
                     loadFileList();  // Recarrega a lista de arquivos após o upload
                 })
                 .catch(error => alert('Erro ao importar o arquivo: ' + error));

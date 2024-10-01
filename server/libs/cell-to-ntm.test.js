@@ -110,7 +110,7 @@ describe("FIELD_MAPPING", () => {
 	});
 
 	it("should return '0' for the 'Lon' field if the longituide field is not present", () => {
-		const result = FIELD_MAPPING.Lon({longituide: -9.295696914196});
+		const result = FIELD_MAPPING.Lon({ longituide: -9.295696914196 });
 		assert.strictEqual(result, "-9.295696914196");
 	});
 
