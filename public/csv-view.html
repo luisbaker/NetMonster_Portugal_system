@@ -1,189 +1,182 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Arquivos CSV/NTM</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor de Arquivos CSV/NTM</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
-        h1 {
-            text-align: center;
-        }
+    h1 {
+      text-align: center;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #fff;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background-color: #fff;
+    }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
 
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-        input {
-            width: 100%;
-            border: none;
-            padding: 5px;
-            box-sizing: border-box;
-        }
+    input {
+      width: 100%;
+      border: none;
+      padding: 5px;
+      box-sizing: border-box;
+    }
 
-        button {
-            margin: 10px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+    button {
+      margin: 10px;
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
 
-            button:hover {
-                background-color: #45a049;
-            }
-    </style>
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Administração da Database NetMonster Portugal</h1>
+  <h1>Administração da Database NetMonster Portugal</h1>
 
-    <label for="fileUpload">Enviar arquivo:</label>
+  <div style="display: flex; flex-direction: column; max-width: max-content;">
+    <label for="fileUpload">Arquivo local</label>
     <input type="file" id="fileUpload" accept=".ntm">
-    <button id="importFile">Importar Arquivo</button>
-
-    <label for="fileSelect">Selecionar arquivo:</label>
+    <label for="fileSelect">Arquivo remoto</label>
     <select id="fileSelect"></select>
-    <button id="loadFile">Carregar Arquivo</button>
+    <button id="loadFile">Combinar</button>
     <button id="saveFile" style="display:none;">Salvar Alterações</button>
+  </div>
 
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>MCC</th>
-                <th>MNC</th>
-                <th>CID/CID</th>
-                <th>LAC</th>
-                <th>RNC/eNB/Gnb</th>
-                <th>PCI/NCI/PSC</th>
-                <th>Lat</th>
-                <th>Lon</th>
-                <th>Localização</th>
-                <th>ARFCN</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>MCC</th>
+        <th>MNC</th>
+        <th>CID/CID</th>
+        <th>LAC</th>
+        <th>RNC/eNB/Gnb</th>
+        <th>PCI/NCI/PSC</th>
+        <th>Lat</th>
+        <th>Lon</th>
+        <th>Localização</th>
+        <th>ARFCN</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <script>
-        const fileSelect = document.getElementById('fileSelect');
-        const loadFileButton = document.getElementById('loadFile');
-        const saveFileButton = document.getElementById('saveFile');
-        const importFileButton = document.getElementById('importFile');
-        const dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+  <script>
+    const fileSelect = document.getElementById('fileSelect');
+    const loadFileButton = document.getElementById('loadFile');
+    const saveFileButton = document.getElementById('saveFile');
+    const dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
 
-        // Função para carregar a lista de arquivos disponíveis
-        function loadFileList() {
-            fetch('/uploads')
-                .then(response => response.json())
-                .then(files => {
-                    fileSelect.innerHTML = '';  // Limpa o select antes de adicionar os arquivos
-                    files.forEach(file => {
-                        const option = document.createElement('option');
-                        option.value = file.name;
-                        option.textContent = file.original;
-                        fileSelect.appendChild(option);
-                    });
-                })
-                .catch(error => alert('Erro ao carregar a lista de arquivos: ' + error));
+    // Função para carregar a lista de arquivos disponíveis
+    function loadFileList() {
+      fetch('/files')
+        .then(response => response.json())
+        .then(files => {
+          fileSelect.innerHTML = '';  // Limpa o select antes de adicionar os arquivos
+          files.forEach(file => {
+            const option = document.createElement('option');
+            option.value = file;
+            option.textContent = file;
+            fileSelect.appendChild(option);
+          });
+        })
+        .catch(error => alert('Erro ao carregar a lista de arquivos: ' + error));
+    }
+
+    loadFileList(); // Carrega a lista de arquivos ao iniciar
+
+    loadFileButton.addEventListener('click', () => {
+      const fileInput = document.getElementById('fileUpload');
+      const localFile = fileInput.files[0];
+
+      if (!localFile) {
+        alert('Por favor, selecione um arquivo para importar!');
+        return;
+      }
+
+      const file = fileSelect.value;
+      if (!file) {
+        alert('Por favor, selecione um arquivo!');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', localFile);
+
+      // Lógica para carregar o arquivo (você deve implementar a leitura do arquivo correspondente)
+      fetch(`/admin/merge/${file}`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.text())
+        .then(contents => loadData(contents.trim()))
+        .catch(error => alert('Erro ao carregar o arquivo: ' + error));
+    });
+
+    saveFileButton.addEventListener('click', () => {
+      const rows = dataTable.rows;
+      const data = [];
+      for (let i = 0; i < rows.length; i++) {
+        const rowData = [];
+        for (let j = 0; j < rows[i].cells.length; j++) {
+          rowData.push(rows[i].cells[j].querySelector('input') ? rows[i].cells[j].querySelector('input').value : rows[i].cells[j].innerText);
         }
+        data.push(rowData.join(';'));
+      }
+      const blob = new Blob([data.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', 'dados_atualizados.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
 
-        loadFileList(); // Carrega a lista de arquivos ao iniciar
-
-        loadFileButton.addEventListener('click', () => {
-            const file = fileSelect.value;
-            if (!file) {
-                alert('Por favor, selecione um arquivo!');
-                return;
-            }
-
-            // Lógica para carregar o arquivo (você deve implementar a leitura do arquivo correspondente)
-            fetch(`/upload/${file}`)
-                .then(response => response.text())
-                .then(contents => loadData(contents))
-                .catch(error => alert('Erro ao carregar o arquivo: ' + error));
-        });
-
-        importFileButton.addEventListener('click', () => {
-            const fileInput = document.getElementById('fileUpload');
-            const file = fileInput.files[0];
-
-            if (!file) {
-                alert('Por favor, selecione um arquivo para importar!');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.success);
-                    loadFileList();  // Recarrega a lista de arquivos após o upload
-                })
-                .catch(error => alert('Erro ao importar o arquivo: ' + error));
-        });
-
-        saveFileButton.addEventListener('click', () => {
-            const rows = dataTable.rows;
-            const data = [];
-            for (let i = 0; i < rows.length; i++) {
-                const rowData = [];
-                for (let j = 0; j < rows[i].cells.length; j++) {
-                    rowData.push(rows[i].cells[j].querySelector('input') ? rows[i].cells[j].querySelector('input').value : rows[i].cells[j].innerText);
-                }
-                data.push(rowData.join(';'));
-            }
-            const blob = new Blob([data.join('\n')], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute('download', 'dados_atualizados.csv');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        function loadData(contents) {
-            dataTable.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
-            const rows = contents.split('\n');
-            for (const row of rows) {
-                const cells = row.split(';');
-                const newRow = dataTable.insertRow();
-                for (let i = 0; i < cells.length; i++) {
-                    const newCell = newRow.insertCell(i);
-                    const input = document.createElement('input');
-                    input.value = cells[i];
-                    newCell.appendChild(input);
-                }
-            }
-            saveFileButton.style.display = 'block'; // Exibe o botão de salvar após carregar os dados
+    function loadData(contents) {
+      dataTable.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
+      const rows = contents.split('\n');
+      for (const row of rows) {
+        const cells = row.split(';');
+        const newRow = dataTable.insertRow();
+        for (let i = 0; i < cells.length; i++) {
+          const newCell = newRow.insertCell(i);
+          const input = document.createElement('input');
+          input.value = cells[i];
+          newCell.appendChild(input);
         }
-    </script>
+      }
+      saveFileButton.style.display = 'block'; // Exibe o botão de salvar após carregar os dados
+    }
+  </script>
 </body>
+
 </html>

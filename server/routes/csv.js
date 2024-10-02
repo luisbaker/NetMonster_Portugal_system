@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parse, stringify } from "csv/sync";
-// server/routes/csv.js
 import express from "express";
 
 // Inicializa o roteador do Express
@@ -13,7 +12,7 @@ const getDirname = (metaUrl) => {
 };
 
 // Defina o caminho para o diretório onde os arquivos .ntm ser�o armazenados
-const filesDirPath = path.join(getDirname(import.meta.url), "../database");
+const filesDirPath = path.resolve(process.cwd(), "public/database");
 
 // Função para ler o CSV (arquivo NTM)
 const readCSV = (filePath) => {
@@ -32,7 +31,8 @@ router.get("/files", (_req, res) => {
 	try {
 		const files = fs.readdirSync(filesDirPath).filter((file) => file.endsWith(".ntm"));
 		res.json(files);
-	} catch (_error) {
+	} catch (error) {
+    console.error(error);
 		res.status(500).send("Erro ao listar os arquivos");
 	}
 });
