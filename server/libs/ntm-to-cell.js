@@ -50,6 +50,8 @@ const FIELD_MAPPING = {
 	// so we'll have to check if it's correct, in the meanwhile
 	// we'll default it to 0
 	eNB: (entries) => ({ enb: Number(entries.find(([key, _]) => key === "eNB")?.at(1)) || 0 }),
+        // gNB is the same as ENB outside the Nokia area.
+        gNB: (entries) => ({ gnb: Number(entries.find(([key, _]) => key === "gNB")?.at(1)) || 0 }),
 	// Physical cell identifier
 	PCI: (entries) => ({ code: Number(entries.find(([key, _]) => key === "PCI")?.at(1)) || 0 }),
 	// Radio frequency channel number
