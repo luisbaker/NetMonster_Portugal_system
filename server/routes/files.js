@@ -3,7 +3,7 @@ import path from "node:path";
 import express from "express";
 import multer from "multer";
 
-// Configura��o do multer para armazenar arquivos
+// Configuração do multer para armazenar arquivos
 const upload = multer({ dest: "public/upload" });
 
 // Cria o roteador

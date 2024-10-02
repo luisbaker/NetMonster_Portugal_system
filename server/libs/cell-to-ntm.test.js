@@ -17,6 +17,21 @@ const TEST_CELL = {
 	timestamp: 1710277141367,
 };
 
+const NR_CELL = {
+	area: 265,
+	cid: 544964740,
+	code: 156,
+	frequency: 156750,
+	latitude: 41.2142,
+	longitude: -8.1711,
+	network: { mcc: 268, mnc: 3 },
+	gnb: 33262,
+	technology: "NR",
+	location: "R. Bairro Pinheiro Manso 295, Constance",
+	caught: "02. 10. 2024 11:50",
+	timestamp: 1727866224738,
+};
+
 describe("cellToNtm", () => {
 	it("should convert a cell object to a formatted string in the NTM format", () => {
 		const expected = "4G;268;06;1792553;48290;7002;21;39.219198573285;-9.295696914196;Capelas, Lourinhã;500";
@@ -208,5 +223,12 @@ describe("FIELD_MAPPING", () => {
 	it("should return an empty string for the 'XX2' field", () => {
 		const result = FIELD_MAPPING.XX2();
 		assert.strictEqual(result, "");
+	});
+
+	it("should work for 5G", () => {
+		const expected = "5G;268;03;544964740;265;33262;156;41.2142;-8.1711;R. Bairro Pinheiro Manso 295, Constance;156750";
+		const result = cellToNtm(NR_CELL);
+
+		assert.strictEqual(result, expected);
 	});
 });
