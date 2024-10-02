@@ -52,7 +52,7 @@ export const FIELD_MAPPING = {
 	},
 	gNB: (cell) => {
 		const cid = Number.parseInt(cell?.cid, 10);
-		return cid ? Math.floor(cid / 256).toString() : "0";
+		return cid ? Math.floor(cid / 16384).toString() : "0";
 	},
 	// Physical cell identifier
 	PCI: (cell) => cell?.code?.toString?.(),

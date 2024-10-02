@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { ntmToCell } from "./ntm-to-cell.js";
 
 const TEST_NTM = "4G;268;06;1792553;48290;0;21;39.219198573285;-9.295696914196;Capelas, Lourinhã;500";
-const TEST_5G = "5G;268;03;544964740;265;2128768;156;41.2142;-8.1711;R. Bairro Pinheiro Manso 295, Constance;156750";
+const TEST_5G = "5G;268;03;544964740;265;33262;156;41.2142;-8.1711;R. Bairro Pinheiro Manso 295, Constance;156750";
 
 describe("ntmToCell", () => {
 	it("should convert a NTM entry to a cell object", () => {
@@ -35,7 +35,7 @@ describe("ntmToCell", () => {
 			longitude: -8.1711,
 			network: { mcc: 268, mnc: 3 },
 			technology: "5G",
-			gnb: 2128768,
+			gnb: 33262,
 			location: "R. Bairro Pinheiro Manso 295, Constance",
 		});
 	});

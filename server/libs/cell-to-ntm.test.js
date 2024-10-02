@@ -25,6 +25,7 @@ const NR_CELL = {
 	latitude: 41.2142,
 	longitude: -8.1711,
 	network: { mcc: 268, mnc: 3 },
+	gnb: 33262,
 	technology: "NR",
 	location: "R. Bairro Pinheiro Manso 295, Constance",
 	caught: "02. 10. 2024 11:50",
@@ -225,8 +226,7 @@ describe("FIELD_MAPPING", () => {
 	});
 
 	it("should work for 5G", () => {
-		const expected =
-			"5G;268;03;544964740;265;2128768;156;41.2142;-8.1711;R. Bairro Pinheiro Manso 295, Constance;156750";
+		const expected = "5G;268;03;544964740;265;33262;156;41.2142;-8.1711;R. Bairro Pinheiro Manso 295, Constance;156750";
 		const result = cellToNtm(NR_CELL);
 
 		assert.strictEqual(result, expected);
