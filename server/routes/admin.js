@@ -1,14 +1,13 @@
 import fs, { rm } from "node:fs/promises";
-import { resolve } from "node:path";
-import express from "express";
-import multer from "multer";
-import bloom from "bloom-filters";
 import { tmpdir } from "node:os";
-import handler from "express-async-handler";
-import _ from "lodash";
+import { resolve } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import bloom from "bloom-filters";
+import express from "express";
+import handler from "express-async-handler";
 import basicAuth from "express-basic-auth";
+import multer from "multer";
 
 async function* concatFiles(files) {
 	for (const file of files) {

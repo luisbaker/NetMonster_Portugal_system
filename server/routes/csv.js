@@ -7,7 +7,7 @@ import express from "express";
 const router = express.Router();
 
 // Função para obter o caminho do diret�rio atual
-const getDirname = (metaUrl) => {
+const _getDirname = (metaUrl) => {
 	return path.dirname(new URL(metaUrl).pathname);
 };
 
@@ -32,7 +32,7 @@ router.get("/files", (_req, res) => {
 		const files = fs.readdirSync(filesDirPath).filter((file) => file.endsWith(".ntm"));
 		res.json(files);
 	} catch (error) {
-    console.error(error);
+		console.error(error);
 		res.status(500).send("Erro ao listar os arquivos");
 	}
 });
