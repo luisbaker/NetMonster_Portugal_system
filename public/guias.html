@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guias - NetMonster Portugal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos específicos para o submenu */
+    .submenu-items {
+      display: none; /* Esconde o submenu por padrão */
+      padding-left: 20px; /* Recuo para os itens do submenu */
+    }
+
+    .submenu-items.active {
+      display: block; /* Mostra o submenu quando ativo */
+    }
+
+    .submenu .fa-chevron-down {
+      transition: transform 0.3s ease; /* Animação da seta */
+    }
+
+    .submenu.active .fa-chevron-down {
+      transform: rotate(180deg); /* Gira a seta quando o submenu está ativo */
+    }
+
+    /* Estilos para vídeos */
+    video {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    /* Estilos para links */
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Menu Lateral -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="/index.html">
+          <i class="fas fa-home"></i>
+          <span>Página Principal</span>
+        </a>
+      </li>
+      <li>
+        <a href="/pesquisa.html">
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="/mapa-antenas.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa de Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="/mapa-pdos.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="submenu">
+        <a href="#guias" id="guias-link">
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="#enviar-dados">
+              <i class="fas fa-database"></i>
+              <span>Enviar dados para a database</span>
+            </a>
+          </li>
+          <li>
+            <a href="#mapear-pdos-josm">
+              <i class="fas fa-map-marked-alt"></i>
+              <span>Guia Completo para Mapear PDOs com o JOSM</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="logo">
+          <img src="img/logo.png" alt="Logo da NetMonster Portugal" width="40">
+          <h1>Guias</h1>
+        </div>
+        <p>Documentação e guias para uso do NetMonster Portugal.</p>
+      </div>
+    </section>
+
+    <!-- Guia: Enviar dados para a database -->
+    <section id="enviar-dados" class="section">
+      <div class="container">
+        <h2><i class="fas fa-database"></i> Como enviar dados para a database principal</h2>
+        <div class="card">
+          <p>
+            Este guia explica como enviar dados para a base de dados principal do NetMonster Portugal.
+          </p>
+
+          <h3>Passo 1: Localizar os sites na própria aplicação</h3>
+          <p>
+            Para isso, é necessário localizar os sites na própria aplicação. Abaixo encontra-se um vídeo a explicar como o fazer:
+          </p>
+          <video controls>
+            <source src="http://localhost:8080/img/localisarsites.mp4" type="video/mp4">
+            O seu navegador não suporta o elemento de vídeo.
+          </video>
+
+          <h3>Passo 2: Enviar os dados para a base de dados central</h3>
+          <p>
+            Depois de localizar os sites, é preciso enviar os dados para a base de dados central. Existem duas maneiras:
+          </p>
+
+          <h4>1. Enviar célula por célula</h4>
+          <p>
+            É necessário abrir os registos, clicar na célula (já localizada) e enviá-la para a base de dados. Aqui está um vídeo a explicar como fazer:
+          </p>
+          <video controls>
+            <source src="http://localhost:8080/img/enviardados.mp4" type="video/mp4">
+            O seu navegador não suporta o elemento de vídeo.
+          </video>
+          <p>
+            <strong>Nota:</strong> Se enviares uma célula sem a localização, o envio será automaticamente descartado.
+          </p>
+
+          <h4>2. Enviar dados diretamente para o @luiiisbaker em privado pelo Telegram</h4>
+          <p>
+            Recomendo que a maior parte da localização dos sites esteja feita. Para isso, podes usar o grupo <a href="https://t.me/cellmapperpt" target="_blank">tg.me/cellmapperpt</a>, onde várias pessoas te podem ajudar.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guia: Mapear PDOs com o JOSM -->
+    <section id="mapear-pdos-josm" class="section">
+      <div class="container">
+        <h2><i class="fas fa-map-marked-alt"></i> Guia Completo para Mapear PDOs com o JOSM</h2>
+        <div class="card">
+          <p>
+            Este guia explica como mapear PDOs (Pontos de Distribuição Óptica) usando o editor JOSM.
+          </p>
+
+          <h3>Passos Detalhados para Mapeamento de PDOs usando o JOSM:</h3>
+
+          <h4>1. Baixar e Instalar o JOSM</h4>
+          <p>
+            O JOSM é um editor de OpenStreetMap para computadores. Você pode baixá-lo pelo link: <a href="https://josm.openstreetmap.de/" target="_blank">JOSM Download</a>.
+          </p>
+
+          <h4>2. Configurar Imagens de Satélite no JOSM</h4>
+          <p>
+            Após instalar o JOSM, é importante configurar o uso de imagens de satélite para ajudar na localização precisa dos PDOs.
+          </p>
+          <ul>
+            <li>No menu superior, vá em <strong>Imagens de Fundo</strong> e selecione <strong>Bing</strong>. Isso permitirá que você visualize as imagens de satélite da Bing como fundo do mapa.</li>
+            <li>Se necessário, você também pode selecionar outras opções disponíveis, como <strong>Mapbox</strong> ou <strong>Esri</strong>, dependendo da clareza das imagens na sua área de interesse.</li>
+          </ul>
+
+          <h4>3. Baixar Área de Informações no JOSM</h4>
+          <p>
+            Antes de começar a editar, você precisa baixar os dados da área em que vai trabalhar.
+          </p>
+          <ul>
+            <li>Clique no ícone de seta verde para baixo na barra de ferramentas (ou vá em <strong>Ficheiro > Descarregar Dados</strong>).</li>
+            <li>Na janela que se abrir, selecione a área que deseja editar usando a ferramenta de seleção e clique em <strong>Baixar</strong>.</li>
+            <li>Isso carregará todos os dados existentes da área selecionada, permitindo que você edite e adicione informações.</li>
+          </ul>
+
+          <h4>4. Abrir e Navegar pelas Imagens de Satélite</h4>
+          <p>
+            Com as imagens de satélite configuradas, você pode navegar até a área onde o PDO está localizado.
+          </p>
+          <ul>
+            <li>Use a ferramenta de zoom e pan para aproximar a área desejada e encontrar a localização exata do PDO.</li>
+          </ul>
+
+          <h4>5. Criar um Nó (Node) no JOSM</h4>
+          <p>
+            Após identificar a localização do PDO, clique no ícone de <strong>Criar Nó</strong> (atalho <strong>A</strong>).
+          </p>
+          <ul>
+            <li>Posicione o cursor na localização desejada no mapa e clique para criar o nó.</li>
+          </ul>
+
+          <h4>6. Adicionar Tags ao Nó</h4>
+          <p>
+            Selecione o nó criado e adicione as seguintes tags para descrever o PDO corretamente.
+          </p>
+          <ul>
+            <li><strong>Para PDO em Parede:</strong></li>
+            <pre>
+operator=DIGI
+support=wall_mounted
+telecom:medium=fibre
+telecom=distribution_point
+ref=XPTO
+            </pre>
+            <li><strong>Para PDO em Poste:</strong></li>
+            <pre>
+operator=DIGI
+support=pole
+telecom:medium=fibre
+telecom=distribution_point
+ref=XPTO
+            </pre>
+            <li><strong>Nota:</strong> Use a referência do PDO (<strong>ref</strong>) se estiver visível. Caso contrário, insira <strong>XPTO</strong> ou <strong>XXXX</strong>.</li>
+          </ul>
+
+          <h4>7. Salvar e Enviar as Alterações</h4>
+          <p>
+            Após adicionar as tags necessárias, salve suas mudanças e envie-as para o OpenStreetMap.
+          </p>
+          <ul>
+            <li>No menu superior, clique em <strong>Ficheiro > Carregar Alterações</strong> para enviar suas edições ao banco de dados do OpenStreetMap.</li>
+          </ul>
+
+          <h3>Dicas Adicionais:</h3>
+          <ul>
+            <li><strong>Ajuste de Precisão:</strong> Utilize o máximo de zoom possível para garantir a precisão ao posicionar o nó do PDO.</li>
+            <li><strong>Verificação de Dados:</strong> Antes de enviar suas alterações, revise as informações adicionadas para evitar erros ou omissões.</li>
+            <li><strong>Colaboração:</strong> Participe da comunidade OpenStreetMap para aprender e compartilhar experiências com outros mapeadores.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container">
+      <p>Direitos Autorais © 2024 NetMonster Portugal</p>
+      <ul class="footer-links">
+        <li><a href="#">Sobre Nós</a></li>
+        <li><a href="#">Contato</a></li>
+        <li><a href="#">Política de Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Função para alternar o submenu
+    function toggleSubmenu(event) {
+      event.preventDefault(); // Evita o comportamento padrão do link
+      const submenu = event.currentTarget.closest('li').querySelector('.submenu-items');
+      submenu.classList.toggle('active');
+    }
+
+    // Adiciona o evento de clique aos submenus
+    const submenus = document.querySelectorAll('.submenu > a');
+    submenus.forEach(submenu => {
+      submenu.addEventListener('click', toggleSubmenu);
+    });
+
+    // Fecha o submenu se clicar fora dele
+    document.addEventListener('click', function (e) {
+      const submenus = document.querySelectorAll('.submenu-items');
+      submenus.forEach(submenu => {
+        const link = submenu.previousElementSibling;
+        if (!link.contains(e.target) && !submenu.contains(e.target)) {
+          submenu.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

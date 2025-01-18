@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa das Antenas - NetMonster Portugal</title>
+  <link rel="stylesheet" href="/css/style.css"> <!-- CSS principal do site -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <style>
+    /* Estilo do mapa */
+    #map {
+      height: calc(100vh - 160px) !important; /* Altura do mapa (100% da viewport menos o espaço do cabeçalho) */
+      width: 100% !important; /* Largura total */
+      margin-top: 20px !important; /* Espaço entre o cabeçalho e o mapa */
+      z-index: 1 !important; /* Garante que o mapa fique acima de outros elementos */
+      border-radius: 12px !important; /* Bordas arredondadas */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important; /* Sombra suave */
+    }
+
+    /* Estilo do popup */
+    .popup-content {
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: #333;
+      padding: 10px;
+    }
+
+    .popup-header {
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .popup-header.vodafone { background-color: #e60000; } /* Vodafone - Vermelho */
+    .popup-header.nos { background-color: #ff6600; } /* NOS - Vermelho alaranjado */
+    .popup-header.digi { background-color: #00aaff; } /* DIGI - Azul */
+    .popup-header.meo { background-color: #00cc99; } /* MEO - Verde-azulado */
+
+    .popup-section {
+      margin: 8px 0;
+      padding: 8px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .popup-section i {
+      margin-right: 8px;
+      color: #666;
+    }
+
+    .popup-section strong {
+      color: #555;
+    }
+
+    /* Estilos específicos para o submenu */
+    .submenu-items {
+      display: none; /* Esconde o submenu por padrão */
+      padding-left: 20px; /* Recuo para os itens do submenu */
+    }
+
+    .submenu-items.active {
+      display: block; /* Mostra o submenu quando ativo */
+    }
+
+    .submenu .fa-chevron-down {
+      transition: transform 0.3s ease; /* Animação da seta */
+    }
+
+    .submenu.active .fa-chevron-down {
+      transform: rotate(180deg); /* Gira a seta quando o submenu está ativo */
+    }
+  </style>
+</head>
+<body>
+  <!-- Menu Lateral -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="/index.html"> <!-- Caminho absoluto para a página inicial -->
+          <i class="fas fa-home"></i>
+          <span>Página Principal</span>
+        </a>
+      </li>
+      <li>
+        <a href="/pesquisa.html"> <!-- Caminho absoluto para a página de pesquisa -->
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="/mapa-antenas.html"> <!-- Caminho absoluto para o mapa de antenas -->
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa de Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="/mapa-pdos.html"> <!-- Caminho absoluto para o mapa dos PDO's -->
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/guias.html"> <!-- Caminho absoluto para a página de guias -->
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Cabeçalho -->
+    <section class="hero">
+      <div class="container">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Logótipo da NetMonster Portugal" width="40">
+          <h1>NetMonster Portugal</h1>
+        </div>
+        <p>Estatísticas e dados em tempo real das redes móveis de Portugal.</p>
+      </div>
+    </section>
+
+    <!-- Mapa -->
+    <div id="map"></div>
+  </main>
+
+  <script>
+    // Inicializa o mapa
+    var map = L.map('map').setView([39.3999, -8.2245], 6);
+
+    // Adiciona a camada do OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Cores para os marcadores de cada operadora
+    var markerColors = {
+      '01': 'red',    // Vodafone
+      '02': 'blue',   // DIGI
+      '03': 'orange', // NOS
+      '06': 'green'   // MEO
+    };
+
+    // Mapeamento de frequências para bandas
+    var frequencyMapping = {
+      '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
+      '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '2775': 'B7', '38150': 'B38' },
+      '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7', '641376': 'N78', '156750': 'N28' },
+      '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
+    };
+
+    var markers = {}; // Armazena os marcadores
+    var markerCluster = L.markerClusterGroup(); // Grupo de clusters de marcadores
+    var selectedOperator = 'all'; // Operadora inicialmente selecionada
+
+    // Função para adicionar um marcador ao mapa
+    function addMarker(loc, mnc) {
+      const coords = `${loc.latitude},${loc.longitude}`;
+
+      if (!markers[coords]) {
+        markers[coords] = { latLng: [loc.latitude, loc.longitude], mncs: [], technology: {} };
+      }
+
+      if (!markers[coords].mncs.includes(mnc)) {
+        markers[coords].mncs.push(mnc);
+      }
+
+      if (!markers[coords].technology[mnc]) {
+        markers[coords].technology[mnc] = { '2G': false, '3G': false, '4G': [], '5G': [], 'enb': '', 'gnb': '' };
+      }
+
+      if (!markers[coords].technology[mnc][loc.technology]) {
+        markers[coords].technology[mnc][loc.technology] = true;
+      }
+
+      if (loc.frequency !== 0) {
+        const frequencyKey = loc.frequency.toString();
+        if (frequencyMapping[mnc] && frequencyMapping[mnc][frequencyKey]) {
+          const band = frequencyMapping[mnc][frequencyKey];
+          if (!markers[coords].technology[mnc][loc.technology].includes(band)) {
+            markers[coords].technology[mnc][loc.technology].push(band);
+          }
+        }
+      } else if (loc.frequency === 0 && markers[coords].technology[mnc][loc.technology].length === 0) {
+        markers[coords].technology[mnc][loc.technology] = ['Sinal detectado mas dados incompletos'];
+      }
+
+      if (loc.enb && markers[coords].technology[mnc]['enb'] === '') {
+        markers[coords].technology[mnc]['enb'] = loc.enb;
+      }
+
+      if (loc.gnb && markers[coords].technology[mnc]['gnb'] === '') {
+        markers[coords].technology[mnc]['gnb'] = loc.gnb;
+      }
+    }
+
+    // Função para verificar RAN Sharing entre NOS e Vodafone
+    function findRANSharing(markerData, currentMNC) {
+      if (currentMNC !== '01' && currentMNC !== '03') {
+        return '';
+      }
+
+      const gnbToCheck = markerData.technology[currentMNC]['gnb'];
+      const enbToCheck = markerData.technology[currentMNC]['enb'];
+
+      const operatorsWithSameGNBorENB = Object.entries(markerData.technology)
+        .filter(([mnc, techInfo]) => {
+          return (mnc === '01' || mnc === '03') &&
+                 mnc !== currentMNC &&
+                 (techInfo['gnb'] === gnbToCheck || techInfo['enb'] === enbToCheck);
+        })
+        .map(([mnc]) => {
+          return { mnc, operatorName: { '01': 'Vodafone', '03': 'NOS' }[mnc] };
+        });
+
+      if (operatorsWithSameGNBorENB.length === 0) {
+        return '';
+      }
+
+      return `RAN Sharing com: ${operatorsWithSameGNBorENB.map(op => op.operatorName).join(', ')}`;
+    }
+
+    // Função para gerar o conteúdo do popup
+    function generatePopupContent(markerData) {
+      var popupContent = '';
+
+      Object.entries(markerData.technology).forEach(([mnc, techInfo]) => {
+        const operatorName = { '01': 'Vodafone', '02': 'DIGI', '03': 'NOS', '06': 'MEO' }[mnc];
+        const operatorClass = { '01': 'vodafone', '02': 'digi', '03': 'nos', '06': 'meo' }[mnc];
+        const frequencies4G = techInfo['4G'].length > 0 ? `Frequências 4G: ${techInfo['4G'].join(', ')}` : '';
+        const frequencies5G = techInfo['5G'].length > 0 ? `Sinal 5G standalone detectado: ${techInfo['5G'].join(', ')}` : '';
+        const enb = techInfo['enb'] !== '' ? `ENB 4G: ${techInfo['enb']}` : '';
+        const gnb = techInfo['gnb'] !== '' ? `GNB 5G: ${techInfo['gnb']}` : '';
+        const ranSharing = findRANSharing(markerData, mnc);
+
+        if (frequencies4G !== '' || frequencies5G !== '') {
+          popupContent += `<div class="popup-header ${operatorClass}">${operatorName}</div>`;
+          if (techInfo['2G']) {
+            popupContent += `<div class="popup-section"><i class="fas fa-signal"></i> 2G capturado</div>`;
+          }
+          if (techInfo['3G']) {
+            popupContent += `<div class="popup-section"><i class="fas fa-signal"></i> 3G capturado</div>`;
+          }
+          if (frequencies4G !== '') {
+            popupContent += `<div class="popup-section"><i class="fas fa-signal"></i> ${frequencies4G}</div>`;
+          }
+          if (frequencies5G !== '') {
+            popupContent += `<div class="popup-section"><i class="fas fa-signal"></i> ${frequencies5G}</div>`;
+          }
+          if (enb !== '') {
+            popupContent += `<div class="popup-section"><i class="fas fa-tower-cell"></i> ${enb}</div>`;
+          }
+          if (gnb !== '') {
+            popupContent += `<div class="popup-section"><i class="fas fa-tower-cell"></i> ${gnb}</div>`;
+          }
+          if (ranSharing !== '') {
+            popupContent += `<div class="popup-section"><i class="fas fa-share-alt"></i> ${ranSharing}</div>`;
+          }
+        }
+      });
+
+      if (popupContent !== '') {
+        popupContent = '<div class="popup-content">' + popupContent + '</div>';
+      }
+
+      return popupContent;
+    }
+
+    // Função para criar os marcadores no mapa
+    function createMarkers() {
+      markerCluster.clearLayers();
+
+      Object.values(markers).forEach(markerData => {
+        if (selectedOperator === 'all' || markerData.mncs.includes(selectedOperator)) {
+          const popupContent = generatePopupContent(markerData);
+          if (popupContent !== '') {
+            const marker = L.marker(markerData.latLng, {
+              title: 'Operadoras neste suporte'
+            }).bindPopup(popupContent);
+            markerCluster.addLayer(marker);
+          }
+        }
+      });
+
+      map.addLayer(markerCluster);
+    }
+
+    // Função para buscar dados da API
+    function fetchData(mnc) {
+      fetch(`https://netmonsterpt.ibakerserver.pt/api/cell/${mnc}/268`)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(loc => {
+            addMarker(loc, mnc);
+          });
+          createMarkers();
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Busca dados para todas as operadoras
+    ['01', '02', '03', '06'].forEach(mnc => {
+      fetchData(mnc);
+    });
+
+    // Atualiza os marcadores ao mover o mapa
+    map.on('moveend', function () {
+      createMarkers();
+    });
+
+    // Adiciona controle de filtro por operadora
+    var operatorFilterControl = L.control({ position: 'topright' });
+
+    operatorFilterControl.onAdd = function (map) {
+      var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      div.innerHTML = `
+        <select id="operatorFilter">
+          <option value="all">Todas as Operadoras</option>
+          <option value="01">Vodafone</option>
+          <option value="02">DIGI</option>
+          <option value="03">NOS</option>
+          <option value="06">MEO</option>
+        </select>
+      `;
+      return div;
+    };
+
+    operatorFilterControl.addTo(map);
+
+    // Filtra os marcadores ao alterar a seleção
+    document.getElementById('operatorFilter').addEventListener('change', function (event) {
+      selectedOperator = event.target.value;
+      createMarkers();
+    });
+
+    // Adiciona um evento de clique ao link "Mapas"
+    document.getElementById('mapas-link').addEventListener('click', function (e) {
+      e.preventDefault(); // Evita o comportamento padrão do link
+      const submenu = this.nextElementSibling; // Seleciona o submenu
+      submenu.classList.toggle('active'); // Alterna a classe 'active' no submenu
+    });
+
+    // Fecha o submenu se clicar fora dele
+    document.addEventListener('click', function (e) {
+      const submenu = document.querySelector('.submenu-items');
+      const mapasLink = document.getElementById('mapas-link');
+      if (!mapasLink.contains(e.target) && !submenu.contains(e.target)) {
+        submenu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>

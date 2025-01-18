@@ -3,52 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Termos de Serviço</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Termos de Serviço e Política de Privacidade - NetMonster Portugal</title>
+  <link rel="stylesheet" href="/css/style.css"> <!-- CSS principal do site -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <img src="/img/logo.png" alt="NetMonster Logo" width="50">
-      <h1>Termos de Serviço</h1>
-    </div>
-  </header>
+  <!-- Menu Lateral -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="/index.html">
+          <i class="fas fa-home"></i>
+          <span>Página Principal</span>
+        </a>
+      </li>
+      <li>
+        <a href="/pesquisa.html">
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="/mapa-antenas.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa de Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="/mapa-pdos.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/guias.html">
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-  <section class="statistics-section">
-    <div class="column">
-      <h2>1. Aceitação dos Termos</h2>
-      <p>Ao acessar ou utilizar este serviço, você concorda com os Termos de Serviço descritos abaixo. Se você não concordar com estes termos, por favor, não utilize o serviço.</p>
-      
-      <h2>2. Coleta e Processamento de Dados de Antenas</h2>
-      <p>2.1. Coleta de Dados de Antenas: Este serviço coleta informações de antenas para fornecer dados sobre a cobertura de rede e qualidade do sinal.</p>
-      <p>2.2. Processamento e Compartilhamento: As informações coletadas são processadas e enviadas para uma base de dados pública, acessível a todos os usuários. Nenhuma informação pessoal identificável é armazenada ou compartilhada.</p>
-      
-      <h2>3. Uso Adequado</h2>
-      <p>Você concorda em utilizar este serviço de maneira adequada e em conformidade com todas as leis e regulamentações aplicáveis. O serviço destina-se a fornecer informações de antenas de maneira pública e colaborativa.</p>
-      
-      <h2>4. Privacidade e Dados Pessoais</h2>
-      <p>4.1. Privacidade: Comprometemo-nos a proteger a privacidade dos usuários. Nenhuma informação pessoal identificável é armazenada ou compartilhada na base de dados pública.</p>
-      <p>4.2. Dados Anônimos: As informações enviadas para a base de dados pública são anonimizadas e não rastreiam usuários individualmente.</p>
-      <p>4.3. Nickname e Email (Opcionais): O fornecimento de um nickname e endereço de e-mail é voluntário e usado apenas para facilitar o envio de dados.</p>
-      <p>4.4. Uso do Nickname para Estatísticas: O nickname fornecido pode ser utilizado para a formação de estatísticas no site, mantendo a privacidade dos usuários.</p>
-      <p>4.5. Localização dos Dados: Todos os dados são hospedados no território da União Europeia, em conformidade com o Regulamento Geral de Proteção de Dados (RGPD) da União Europeia.</p>
-      
-      <h2>5. Propriedade Intelectual</h2>
-      <p>O conteúdo fornecido através do serviço é protegido por direitos autorais, marcas registradas e outros direitos de propriedade intelectual. Você concorda em respeitar esses direitos.</p>
-      
-      <h2>6. Alterações nos Termos de Serviço</h2>
-      <p>Reservamo-nos o direito de modificar estes Termos de Serviço a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação. O uso contínuo do serviço após tais alterações constituirá sua aceitação dos Termos modificados.</p>
-            
-      <h2>7. Política de Privacidade Completa</h2>
-      <p>Para obter informações detalhadas sobre a coleta e processamento de dados, consulte nossa Política de Privacidade Completa.</p>
-      
-      <h2>8. Contato</h2>
-      <p>Se tiver dúvidas sobre estes Termos de Serviço, entre em contato conosco em abuse@ibakerserver.pt</p>
-    </div>
-  </section>
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Cabeçalho -->
+    <section class="hero">
+      <div class="container">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Logótipo da NetMonster Portugal" width="40">
+          <h1>Termos de Serviço e Política de Privacidade</h1>
+        </div>
+        <p>Estatísticas e dados em tempo real das redes móveis de Portugal.</p>
+      </div>
+    </section>
 
-  <div id="direitosAutorais">
-    <script src="js/direitosAutorais.js" defer></script>
-  </div>
+    <!-- Navegação Interna -->
+    <nav class="internal-nav">
+      <ul>
+        <li><a href="#termos-de-servico">Termos de Serviço</a></li>
+        <li><a href="#politica-de-privacidade">Política de Privacidade</a></li>
+      </ul>
+    </nav>
+
+    <!-- Conteúdo dos Termos de Serviço -->
+    <section id="termos-de-servico" class="statistics-section">
+      <div class="column">
+        <h2>1. Aceitação dos Termos</h2>
+        <p>Ao acessar ou utilizar este serviço, você concorda com os Termos de Serviço descritos abaixo. Se você não concordar com estes termos, por favor, não utilize o serviço.</p>
+        
+        <h2>2. Coleta e Processamento de Dados de Antenas</h2>
+        <p>2.1. Coleta de Dados de Antenas: Este serviço coleta informações de antenas em <strong>Portugal</strong> para fornecer dados sobre a cobertura de rede e qualidade do sinal.</p>
+        <p>2.2. Processamento e Compartilhamento: As informações coletadas são processadas e enviadas para uma base de dados pública, acessível a todos os usuários. Nenhuma informação pessoal identificável é armazenada ou compartilhada.</p>
+        
+        <h2>3. Uso Adequado</h2>
+        <p>Você concorda em utilizar este serviço de maneira adequada e em conformidade com todas as leis e regulamentações aplicáveis em <strong>Portugal</strong>. O serviço destina-se a fornecer informações de antenas de maneira pública e colaborativa.</p>
+        
+        <h2>4. Privacidade e Dados Pessoais</h2>
+        <p>4.1. Privacidade: Comprometemo-nos a proteger a privacidade dos usuários. Nenhuma informação pessoal identificável é armazenada ou compartilhada na base de dados pública.</p>
+        <p>4.2. Dados Anônimos: As informações enviadas para a base de dados pública são anonimizadas e não rastreiam usuários individualmente.</p>
+        <p>4.3. Nickname e Email (Opcionais): O fornecimento de um nickname e endereço de e-mail é voluntário e usado apenas para facilitar o envio de dados.</p>
+        <p>4.4. Uso do Nickname para Estatísticas: O nickname fornecido pode ser utilizado para a formação de estatísticas no site, mantendo a privacidade dos usuários.</p>
+        <p>4.5. Localização dos Dados: Todos os dados são hospedados no território da União Europeia, em conformidade com o Regulamento Geral de Proteção de Dados (RGPD) da União Europeia.</p>
+        
+        <h2>5. Propriedade Intelectual</h2>
+        <p>O conteúdo fornecido através do serviço é protegido por direitos autorais, marcas registradas e outros direitos de propriedade intelectual. Você concorda em respeitar esses direitos.</p>
+        
+        <h2>6. Código e Base de Dados Open-Source</h2>
+        <p>6.1. O código-fonte deste site e a base de dados são <strong>open-source</strong>, disponíveis publicamente para consulta, contribuição e uso pela comunidade.</p>
+        <p>6.2. Você pode acessar o repositório do projeto no GitHub: <a href="https://github.com/netmonster-portugal" target="_blank">NetMonster Portugal no GitHub</a>.</p>
+        
+        <h2>7. Alterações nos Termos de Serviço</h2>
+        <p>Reservamo-nos o direito de modificar estes Termos de Serviço a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação. O uso contínuo do serviço após tais alterações constituirá sua aceitação dos Termos modificados.</p>
+      </div>
+    </section>
+
+    <!-- Conteúdo da Política de Privacidade -->
+    <section id="politica-de-privacidade" class="statistics-section">
+      <div class="column">
+        <h2>1. Introdução</h2>
+        <p>A sua privacidade é importante para nós. Esta política descreve como coletamos, usamos e protegemos as suas informações pessoais em <strong>Portugal</strong>.</p>
+        
+        <h2>2. Coleta de Dados</h2>
+        <p>2.1. Coletamos informações de antenas em <strong>Portugal</strong> para fornecer dados sobre a cobertura de rede e qualidade do sinal.</p>
+        <p>2.2. Nenhuma informação pessoal identificável é armazenada ou compartilhada.</p>
+        
+        <h2>3. Uso dos Dados</h2>
+        <p>Os dados coletados são utilizados para melhorar a qualidade do serviço e fornecer informações úteis aos usuários em <strong>Portugal</strong>.</p>
+        
+        <h2>4. Compartilhamento de Dados</h2>
+        <p>4.1. As informações coletadas são processadas e enviadas para uma base de dados pública, acessível a todos os usuários.</p>
+        <p>4.2. Nenhuma informação pessoal identificável é compartilhada.</p>
+        
+        <h2>5. Segurança dos Dados</h2>
+        <p>5.1. Implementamos medidas de segurança para proteger as suas informações.</p>
+        <p>5.2. Todos os dados são hospedados no território da União Europeia, em conformidade com o Regulamento Geral de Proteção de Dados (RGPD).</p>
+        
+        <h2>6. Seus Direitos</h2>
+        <p>Você tem o direito de acessar, corrigir ou excluir as suas informações pessoais. Para exercer esses direitos, entre em contato conosco.</p>
+        
+        <h2>7. Alterações na Política de Privacidade</h2>
+        <p>Reservamo-nos o direito de modificar esta política a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação.</p>
+        
+        <h2>8. Contato</h2>
+        <p>Se tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco em <a href="mailto:abuse@ibakerserver.pt">abuse@ibakerserver.pt</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container">
+      <p>Direitos de Autor © 2024 NetMonster Portugal</p>
+      <ul class="footer-links">
+        <li><a href="/sobre-nos.html">Sobre Nós</a></li>
+        <li><a href="/contacto.html">Contacto</a></li>
+        <li><a href="/tos.html">Termos de Serviço e Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
 </body>
 </html>

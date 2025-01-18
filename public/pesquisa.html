@@ -1,195 +1,247 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesquisa na Base de Dados NTM</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background-color: #1e1e1e;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-        h1 {
-            text-align: center;
-            color: #e0e0e0;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        input[type="text"], select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #444;
-            border-radius: 4px;
-            background-color: #333;
-            color: #e0e0e0;
-        }
-        input[type="submit"] {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: #28a745;
-            color: #fff;
-            cursor: pointer;
-        }
-        .results {
-            margin-top: 20px;
-        }
-        .result-item {
-            padding: 10px;
-            border-bottom: 1px solid #444;
-        }
-        .hidden {
-            display: none;
-        }
-        .result-item p {
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa na Base de Dados NTM - NetMonster Portugal</title>
+  <link rel="stylesheet" href="/css/style.css"> <!-- CSS principal do site -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos específicos para o submenu */
+    .submenu-items {
+      display: none; /* Esconde o submenu por padrão */
+      padding-left: 20px; /* Recuo para os itens do submenu */
+    }
+
+    .submenu-items.active {
+      display: block; /* Mostra o submenu quando ativo */
+    }
+
+    .submenu .fa-chevron-down {
+      transition: transform 0.3s ease; /* Animação da seta */
+    }
+
+    .submenu.active .fa-chevron-down {
+      transform: rotate(180deg); /* Gira a seta quando o submenu está ativo */
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Pesquisa na Base de Dados NetMonster - Portugal</h1>
-        <form id="searchForm">
-            <label for="operator">Operadora:</label>
-            <select id="operator" name="operator" required>
-                <option value="">Selecione a operadora</option>
-                <option value="06">MEO (MNC: 06)</option>
-                <option value="01">Vodafone Portugal (MNC: 01)</option>
-                <option value="03">NOS (MNC: 03)</option>
-                <option value="02">DIGI Portugal (MNC: 02)</option>
-            </select>
+  <!-- Menu Lateral -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="/index.html">
+          <i class="fas fa-home"></i>
+          <span>Página Principal</span>
+        </a>
+      </li>
+      <li>
+        <a href="/pesquisa.html">
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="/mapa-antenas.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa de Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="/mapa-pdos.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/guias.html">
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-            <label for="searchType">Pesquisar por:</label>
-            <select id="searchType" name="searchType" required>
-                <option value="">Selecione o tipo de pesquisa</option>
-                <option value="cid">CID</option>
-                <option value="enb">ENB</option>
-                <option value="pci">PCI</option>
-                <option value="tac">TAC</option>
-            </select>
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Cabeçalho -->
+    <section class="hero">
+      <div class="container">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Logótipo da NetMonster Portugal" width="40">
+          <h1>NetMonster Portugal</h1>
+        </div>
+        <p>Estatísticas e dados em tempo real das redes móveis de Portugal.</p>
+      </div>
+    </section>
 
-            <div id="cidField" class="hidden">
-                <label for="cid">CID:</label>
-                <input type="text" id="cid" name="cid" placeholder="Digite o CID">
-            </div>
+    <!-- Container da Pesquisa -->
+    <div class="search-container">
+      <h1>Pesquisa na Base de Dados NetMonster - Portugal</h1>
+      <form id="searchForm" class="search-form">
+        <label for="operator">Operadora:</label>
+        <select id="operator" name="operator" required>
+          <option value="">Selecione a operadora</option>
+          <option value="06">MEO (MNC: 06)</option>
+          <option value="01">Vodafone Portugal (MNC: 01)</option>
+          <option value="03">NOS (MNC: 03)</option>
+          <option value="02">DIGI Portugal (MNC: 02)</option>
+        </select>
 
-            <div id="enbField" class="hidden">
-                <label for="enb">ENB:</label>
-                <input type="text" id="enb" name="enb" placeholder="Digite o ENB">
-            </div>
+        <label for="searchType">Pesquisar por:</label>
+        <select id="searchType" name="searchType" required>
+          <option value="">Selecione o tipo de pesquisa</option>
+          <option value="cid">CID</option>
+          <option value="enb">ENB</option>
+          <option value="pci">PCI</option>
+          <option value="tac">TAC</option>
+        </select>
 
-            <div id="pciField" class="hidden">
-                <label for="pci">PCI:</label>
-                <input type="text" id="pci" name="pci" placeholder="Digite o PCI">
-            </div>
+        <div id="cidField" class="hidden">
+          <label for="cid">CID:</label>
+          <input type="text" id="cid" name="cid" placeholder="Digite o CID">
+        </div>
 
-            <div id="tacField" class="hidden">
-                <label for="tac">TAC:</label>
-                <input type="text" id="tac" name="tac" placeholder="Digite o TAC">
-            </div>
+        <div id="enbField" class="hidden">
+          <label for="enb">ENB:</label>
+          <input type="text" id="enb" name="enb" placeholder="Digite o ENB">
+        </div>
 
-            <input type="submit" value="Pesquisar">
-        </form>
-        <div class="results" id="results"></div>
+        <div id="pciField" class="hidden">
+          <label for="pci">PCI:</label>
+          <input type="text" id="pci" name="pci" placeholder="Digite o PCI">
+        </div>
+
+        <div id="tacField" class="hidden">
+          <label for="tac">TAC:</label>
+          <input type="text" id="tac" name="tac" placeholder="Digite o TAC">
+        </div>
+
+        <input type="submit" value="Pesquisar">
+      </form>
+      <div class="results" id="results"></div>
     </div>
+  </main>
 
-    <script>
-        document.getElementById('searchType').addEventListener('change', function(event) {
-            var searchType = event.target.value;
-            document.getElementById('cidField').classList.add('hidden');
-            document.getElementById('enbField').classList.add('hidden');
-            document.getElementById('pciField').classList.add('hidden');
-            document.getElementById('tacField').classList.add('hidden');
-            
-            if (searchType === 'cid') {
-                document.getElementById('cidField').classList.remove('hidden');
-            } else if (searchType === 'enb') {
-                document.getElementById('enbField').classList.remove('hidden');
-            } else if (searchType === 'pci') {
-                document.getElementById('pciField').classList.remove('hidden');
-            } else if (searchType === 'tac') {
-                document.getElementById('tacField').classList.remove('hidden');
-            }
+  <script>
+    // Configuração da URL da API
+    const apiBaseUrl = 'http://localhost:8080'; // URL base da API local
+
+    // Adiciona um evento de clique ao link "Mapas"
+    document.getElementById('mapas-link').addEventListener('click', function (e) {
+      e.preventDefault(); // Evita o comportamento padrão do link
+      const submenu = this.nextElementSibling; // Seleciona o submenu
+      submenu.classList.toggle('active'); // Alterna a classe 'active' no submenu
+    });
+
+    // Fecha o submenu se clicar fora dele
+    document.addEventListener('click', function (e) {
+      const submenu = document.querySelector('.submenu-items');
+      const mapasLink = document.getElementById('mapas-link');
+      if (!mapasLink.contains(e.target) && !submenu.contains(e.target)) {
+        submenu.classList.remove('active');
+      }
+    });
+
+    // Mostra/oculta campos de pesquisa com base no tipo selecionado
+    document.getElementById('searchType').addEventListener('change', function (e) {
+      const searchType = e.target.value;
+      document.getElementById('cidField').classList.add('hidden');
+      document.getElementById('enbField').classList.add('hidden');
+      document.getElementById('pciField').classList.add('hidden');
+      document.getElementById('tacField').classList.add('hidden');
+
+      if (searchType === 'cid') {
+        document.getElementById('cidField').classList.remove('hidden');
+      } else if (searchType === 'enb') {
+        document.getElementById('enbField').classList.remove('hidden');
+      } else if (searchType === 'pci') {
+        document.getElementById('pciField').classList.remove('hidden');
+      } else if (searchType === 'tac') {
+        document.getElementById('tacField').classList.remove('hidden');
+      }
+    });
+
+    // Submissão do formulário de pesquisa
+    document.getElementById('searchForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      searchNTM();
+    });
+
+    // Função para realizar a pesquisa
+    function searchNTM() {
+      const operator = document.getElementById('operator').value;
+      const searchType = document.getElementById('searchType').value;
+      let searchValue;
+
+      if (searchType === 'cid') {
+        searchValue = document.getElementById('cid').value;
+      } else if (searchType === 'enb') {
+        searchValue = document.getElementById('enb').value;
+      } else if (searchType === 'pci') {
+        searchValue = document.getElementById('pci').value;
+      } else if (searchType === 'tac') {
+        searchValue = document.getElementById('tac').value;
+      }
+
+      // Monta a URL da API
+      let url = `${apiBaseUrl}/api/cell/${operator}/268`;
+      if (searchValue) {
+        url += `?${searchType}=${encodeURIComponent(searchValue)}`;
+      }
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const resultsContainer = document.getElementById('results');
+          resultsContainer.innerHTML = '';
+
+          if (searchType === 'enb' && searchValue) {
+            data = data.filter(item => item.enb == searchValue);
+          } else if (searchType === 'tac' && searchValue) {
+            data = data.filter(item => item.area == searchValue);
+          }
+
+          if (data && data.length > 0) {
+            data.forEach(item => {
+              const div = document.createElement('div');
+              div.className = 'result-item';
+              div.innerHTML = `
+                <p><strong>Tecnologia:</strong> ${item.technology}</p>
+                <p><strong>Network MCC:</strong> ${item.network.mcc}</p>
+                <p><strong>Network MNC:</strong> ${item.network.mnc}</p>
+                <p><strong>CID:</strong> ${item.cid}</p>
+                <p><strong>Tac:</strong> ${item.area}</p>
+                <p><strong>ENB:</strong> ${item.enb}</p>
+                <p><strong>Código:</strong> ${item.code}</p>
+                <p><strong>Latitude:</strong> ${item.latitude}</p>
+                <p><strong>Longitude:</strong> ${item.longitude}</p>
+                <p><strong>Localização:</strong> ${item.location}</p>
+                <p><strong>Frequência:</strong> ${item.frequency}</p>
+              `;
+              resultsContainer.appendChild(div);
+            });
+          } else {
+            resultsContainer.innerHTML = '<p>Nenhum resultado encontrado.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          const resultsContainer = document.getElementById('results');
+          resultsContainer.innerHTML = '<p>Ocorreu um erro ao buscar os resultados.</p>';
         });
-
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            searchNTM();
-        });
-
-        function searchNTM() {
-            var operator = document.getElementById('operator').value;
-            var searchType = document.getElementById('searchType').value;
-            var searchValue;
-
-            if (searchType === 'cid') {
-                searchValue = document.getElementById('cid').value;
-            } else if (searchType === 'enb') {
-                searchValue = document.getElementById('enb').value;
-            } else if (searchType === 'pci') {
-                searchValue = document.getElementById('pci').value;
-            } else if (searchType === 'tac') {
-                searchValue = document.getElementById('tac').value;
-            }
-
-            var url = `https://netmonsterpt.ibakerserver.pt/api/cell/${operator}/268`;
-            if (searchValue) {
-                url += `?${searchType}=${encodeURIComponent(searchValue)}`;
-            }
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    var resultsContainer = document.getElementById('results');
-                    resultsContainer.innerHTML = '';
-                    
-                    if (searchType === 'enb' && searchValue) {
-                        data = data.filter(item => item.enb == searchValue);
-                    } else if (searchType === 'tac' && searchValue) {
-                        data = data.filter(item => item.area == searchValue);
-                    }
-
-                    if (data && data.length > 0) {
-                        data.forEach(item => {
-                            var div = document.createElement('div');
-                            div.className = 'result-item';
-                            div.innerHTML = `
-                                <p><strong>Tecnologia:</strong> ${item.technology}</p>
-                                <p><strong>Network MCC:</strong> ${item.network.mcc}</p>
-                                <p><strong>Network MNC:</strong> ${item.network.mnc}</p>
-                                <p><strong>CID:</strong> ${item.cid}</p>
-                                <p><strong>Tac:</strong> ${item.area}</p>
-                                <p><strong>ENB:</strong> ${item.enb}</p>
-                                <p><strong>Código:</strong> ${item.code}</p>
-                                <p><strong>Latitude:</strong> ${item.latitude}</p>
-                                <p><strong>Longitude:</strong> ${item.longitude}</p>
-                                <p><strong>Localização:</strong> ${item.location}</p>
-                                <p><strong>Frequência:</strong> ${item.frequency}</p>
-                            `;
-                            resultsContainer.appendChild(div);
-                        });
-                    } else {
-                        resultsContainer.innerHTML = '<p>Nenhum resultado encontrado.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    var resultsContainer = document.getElementById('results');
-                    resultsContainer.innerHTML = '<p>Ocorreu um erro ao buscar os resultados.</p>';
-                });
-        }
-    </script>
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa dos PDO's - NetMonster Portugal</title>
+  <link rel="stylesheet" href="/css/style.css"> <!-- CSS principal do site -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script> <!-- Para fazer requisições HTTP -->
+  <style>
+    /* Estilo do mapa */
+    #map {
+      height: calc(100vh - 160px); /* Altura do mapa (100% da viewport menos o espaço do cabeçalho) */
+      width: 100%; /* Largura total */
+      margin-top: 20px; /* Espaço entre o cabeçalho e o mapa */
+      z-index: 1; /* Garante que o mapa fique acima de outros elementos */
+      border-radius: 12px; /* Bordas arredondadas */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra suave */
+    }
+
+    /* Estilo do popup */
+    .popup-content {
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: #333;
+      padding: 10px;
+    }
+
+    .popup-header {
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .popup-header.vodafone { background-color: #e60000; } /* Vodafone - Vermelho */
+    .popup-header.nos { background-color: #ff6600; } /* NOS - Vermelho alaranjado */
+    .popup-header.digi { background-color: #00aaff; } /* DIGI - Azul */
+    .popup-header.meo { background-color: #00cc99; } /* MEO - Verde-azulado */
+    .popup-header.dsttelecom { background-color: #800080; } /* DST Telecom - Roxo */
+
+    .popup-section {
+      margin: 8px 0;
+      padding: 8px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .popup-section i {
+      margin-right: 8px;
+      color: #666;
+    }
+
+    .popup-section strong {
+      color: #555;
+    }
+
+    /* Estilos específicos para o submenu */
+    .submenu-items {
+      display: none; /* Esconde o submenu por padrão */
+      padding-left: 20px; /* Recuo para os itens do submenu */
+    }
+
+    .submenu-items.active {
+      display: block; /* Mostra o submenu quando ativo */
+    }
+
+    .submenu .fa-chevron-down {
+      transition: transform 0.3s ease; /* Animação da seta */
+    }
+
+    .submenu.active .fa-chevron-down {
+      transform: rotate(180deg); /* Gira a seta quando o submenu está ativo */
+    }
+  </style>
+</head>
+<body>
+  <!-- Menu Lateral -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="/index.html">
+          <i class="fas fa-home"></i>
+          <span>Página Principal</span>
+        </a>
+      </li>
+      <li>
+        <a href="/pesquisa.html">
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="/mapa-antenas.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa de Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="/mapa-pdos.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/guias.html">
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Cabeçalho -->
+    <section class="hero">
+      <div class="container">
+        <div class="logo">
+          <img src="/img/logo.png" alt="Logótipo da NetMonster Portugal" width="40">
+          <h1>NetMonster Portugal</h1>
+        </div>
+        <p>Estatísticas e dados em tempo real das redes móveis de Portugal.</p>
+      </div>
+    </section>
+
+    <!-- Mapa -->
+    <div id="map"></div>
+  </main>
+
+  <script>
+    // Inicializa o mapa centralizado em Portugal
+    var map = L.map('map').setView([39.3999, -8.2245], 7); // Coordenadas de Portugal
+
+    // Adiciona a camada do OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Cria um cluster de marcadores
+    var markers = L.markerClusterGroup();
+
+    // Função para buscar PDO's no OpenStreetMap usando a API Overpass
+    function fetchPDOs() {
+      // Query Overpass para buscar PDO's em Portugal
+      const overpassQuery = `
+        [out:json][timeout:25];
+        area["ISO3166-1"="PT"]->.portugal;
+        (
+          node["telecom"="distribution_point"]["telecom:medium"="fibre"](area.portugal);
+          way["telecom"="distribution_point"]["telecom:medium"="fibre"](area.portugal);
+          relation["telecom"="distribution_point"]["telecom:medium"="fibre"](area.portugal);
+        );
+        out body;
+        >;
+        out skel qt;
+      `;
+
+      // URL da API Overpass
+      const overpassUrl = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
+
+      // Faz a requisição à API Overpass
+      axios.get(overpassUrl)
+        .then(response => {
+          const data = response.data;
+          if (data.elements && data.elements.length > 0) {
+            data.elements.forEach(element => {
+              // Verifica se o elemento tem coordenadas
+              if (element.lat && element.lon) {
+                const operator = element.tags.operator || "Desconhecido";
+                const ref = element.tags.ref || "Sem referência";
+                const support = element.tags.support || "Desconhecido";
+
+                // Define a cor do cabeçalho do popup com base na operadora
+                const operatorClass = {
+                  'Vodafone': 'vodafone',
+                  'NOS': 'nos',
+                  'MEO': 'meo',
+                  'DIGI': 'digi',
+                  'DST Telecom': 'dsttelecom' // Adicionado DST Telecom
+                }[operator] || '';
+
+                // Cria o conteúdo do popup
+                const popupContent = `
+                  <div class="popup-content">
+                    <div class="popup-header ${operatorClass}">${operator}</div>
+                    <div class="popup-section">
+                      <strong>Referência:</strong> ${ref}
+                    </div>
+                    <div class="popup-section">
+                      <strong>Suporte:</strong> ${support}
+                    </div>
+                  </div>
+                `;
+
+                // Adiciona um marcador ao cluster
+                var marker = L.marker([element.lat, element.lon]);
+                marker.bindPopup(popupContent);
+                markers.addLayer(marker);
+              }
+            });
+
+            // Adiciona o cluster de marcadores ao mapa
+            map.addLayer(markers);
+          } else {
+            console.log("Nenhum PDO encontrado.");
+          }
+        })
+        .catch(error => {
+          console.error("Erro ao buscar PDO's:", error);
+        });
+    }
+
+    // Busca os PDO's ao carregar a página
+    fetchPDOs();
+
+    // Adiciona um evento de clique ao link "Mapas"
+    document.getElementById('mapas-link').addEventListener('click', function (e) {
+      e.preventDefault(); // Evita o comportamento padrão do link
+      const submenu = this.nextElementSibling; // Seleciona o submenu
+      submenu.classList.toggle('active'); // Alterna a classe 'active' no submenu
+    });
+
+    // Fecha o submenu se clicar fora dele
+    document.addEventListener('click', function (e) {
+      const submenu = document.querySelector('.submenu-items');
+      const mapasLink = document.getElementById('mapas-link');
+      if (!mapasLink.contains(e.target) && !submenu.contains(e.target)) {
+        submenu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>

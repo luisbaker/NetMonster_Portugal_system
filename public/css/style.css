@@ -1,11 +1,11 @@
 /* Estilos gerais */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Nunito', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #333; /* Fundo escuro */
-  color: #fff; /* Texto branco */
-  transition: background-color 0.3s, color 0.3s; /* Transição suave para mudanças de tema */
+  background-color: #1e1e1e; /* Fundo escuro */
+  color: #ffffff; /* Texto branco */
+  line-height: 1.6;
 }
 
 .container {
@@ -14,139 +14,499 @@ body {
   padding: 0 20px;
 }
 
-/* Estilos do cabeçalho */
-.header {
-  background-color: #2ecc71; /* Verde como cor de fundo */
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Menu Lateral */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: #2d2d2d; /* Cinza médio */
+  border-radius: 0 20px 20px 0;
+  padding: 20px 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: width 0.3s;
+  width: 60px; /* Largura inicial (compacto) */
+  overflow: hidden; /* Esconde o texto inicialmente */
 }
 
-.logo {
-  display: flex;
-  align-items: center;
+.side-menu:hover {
+  width: 200px; /* Largura ao expandir */
 }
 
-.logo img {
-  vertical-align: middle;
-  margin-right: 10px;
-}
-
-.logo h1 {
-  font-size: 24px;
-  margin: 0;
-}
-
-.navbar ul {
+.side-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinha os itens à esquerda */
+  height: 100%;
+}
+
+.side-menu ul li {
+  margin: 15px 0;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.side-menu ul li a {
+  color: #ffffff;
+  font-size: 20px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.side-menu ul li a:hover {
+  background-color: #27ae60; /* Verde escuro */
+}
+
+.side-menu ul li a span {
+  opacity: 0; /* Texto escondido inicialmente */
+  transition: opacity 0.3s;
+}
+
+.side-menu:hover ul li a span {
+  opacity: 1; /* Texto visível ao expandir */
+}
+
+/* Submenu */
+.submenu .submenu-items {
+  display: none;
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.submenu.active .submenu-items {
+  display: block;
+}
+
+.submenu .submenu-items li {
+  margin: 10px 0;
+}
+
+.submenu .submenu-items li a {
+  font-size: 16px;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #2ecc71, #3498db);
+  padding: 40px 0;
+  text-align: center;
+  border-radius: 12px; /* Bordas arredondadas */
+  margin: 20px 0; /* Espaçamento externo */
+}
+
+.hero .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
-.navbar ul li {
-  display: inline;
+.hero .logo img {
+  width: 40px;
+  height: auto;
 }
 
-.navbar ul li a {
-  color: #fff;
-  text-decoration: none;
-  padding: 10px 15px;
+.hero h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #ffffff;
+}
+
+.hero p {
   font-size: 16px;
-  transition: background-color 0.3s;
+  margin: 10px 0 0;
+  color: #ffffff;
 }
 
-.navbar ul li a:hover, .navbar ul li a:focus {
-  background-color: #27ae60; /* Verde mais escuro quando hover */
-  border-radius: 5px;
-  outline: none;
-}
-
-/* Estilos do conteúdo principal */
-.main-content {
+/* Grid Container */
+.grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(2, 1fr); /* 2 colunas por padrão */
+  gap: 40px; /* Espaçamento entre os blocos */
+  padding: 20px; /* Espaçamento interno do contêiner */
+  margin-bottom: 40px; /* Adiciona espaçamento abaixo do grid */
 }
 
-.statistics-section, .map-section {
-  background-color: #444; /* Fundo mais escuro para seções de estatísticas e mapa */
+/* Segunda Linha: 3 colunas */
+.grid-container-3col {
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+}
+
+/* Seções */
+.section {
+  background-color: #2d2d2d; /* Azul escuro */
+  padding: 30px; /* Aumentei o padding interno */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: 100%; /* Garantir que as seções tenham a mesma altura */
+  margin-bottom: 0; /* Remove margem inferior para evitar sobreposição */
+}
+
+.section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+/* Cards */
+.card {
+  background-color: #1e1e1e; /* Fundo escuro */
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 100%; /* Garantir que os cards tenham a mesma altura */
 }
 
-.statistics-section h2, .map-section h2 {
-  color: #2ecc71; /* Verde para títulos de seção */
+/* Aumenta o tamanho dos gráficos */
+.card canvas {
+  height: 300px !important; /* Altura do gráfico */
+  width: 100% !important;   /* Largura do gráfico */
 }
 
-#mapa-antenas {
-  grid-column: span 2;
+/* Conteúdo Principal */
+.main-content {
+  margin-left: 80px; /* Espaço para o menu lateral */
+  padding: 20px;
+  transition: margin-left 0.3s;
 }
 
-/* Estilos do rodapé */
+/* Ajuste quando o menu expandir */
+.side-menu:hover ~ .main-content {
+  margin-left: 220px; /* Aumenta o espaço para o menu expandido */
+}
+
+/* Rodapé */
 .footer {
-  background-color: #2ecc71; /* Verde como cor de fundo */
+  background-color: #2d2d2d; /* Cinza médio */
   text-align: center;
   padding: 20px 0;
-  color: #fff; /* Texto branco */
+  margin-top: 80px; /* Aumentei o espaçamento acima do rodapé */
+  border-radius: 12px; /* Bordas arredondadas */
 }
 
-.footer p {
-  margin: 0;
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
-/* Media Queries para responsividade */
+.footer-links a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
+  .grid-container, .grid-container-3col {
+    grid-template-columns: 1fr; /* 1 coluna em telas menores */
   }
 
-  .navbar ul {
-    flex-direction: column;
-    gap: 5px;
+  .side-menu {
+    width: 50px;
   }
 
-  .navbar ul li {
-    display: block;
+  .side-menu:hover {
+    width: 160px;
   }
 
-  .navbar ul li a {
-    display: block;
-    padding: 10px 0;
+  .hero h1 {
+    font-size: 20px;
   }
 
-  .logo h1 {
-    margin-top: 10px;
+  .hero p {
+    font-size: 12px;
+  }
+
+  .section h2 {
+    font-size: 20px;
+  }
+
+  .card {
+    padding: 15px;
   }
 
   .main-content {
-    grid-template-columns: 1fr;
+    margin-left: 60px; /* Ajuste para mobile */
   }
 
-  #mapa-antenas {
-    grid-column: 1;
+  .side-menu:hover ~ .main-content {
+    margin-left: 180px; /* Ajuste para mobile */
   }
 }
 
-/* Modo escuro */
-body.dark-mode {
-  background-color: #111; /* Fundo ainda mais escuro no modo escuro */
-  color: #ddd; /* Texto mais claro no modo escuro */
+/* Estilo para a tabela */
+.table-container {
+  max-height: 300px; /* Altura máxima da tabela */
+  overflow-y: auto;  /* Adiciona scroll vertical se necessário */
+  margin-bottom: 10px;
 }
 
-.body.dark-mode .header {
-  background-color: #27ae60; /* Verde como cor de fundo no modo escuro */
+#lastImportsTable {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.body.dark-mode .statistics-section, .body.dark-mode .map-section {
-  background-color: #333; /* Fundo mais escuro para seções de estatísticas e mapa no modo escuro */
+#lastImportsTable th,
+#lastImportsTable td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #444;
 }
 
-.body.dark-mode .footer {
-  background-color: #27ae60; /* Verde como cor de fundo no modo escuro */
+#lastImportsTable th {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
+
+#lastImportsTable tbody tr:hover {
+  background-color: #3d3d3d;
+}
+
+/* Estilo para o botão "Ver Mais" */
+.load-more-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  background-color: #27ae60; /* Verde escuro */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 10px;
+}
+
+.load-more-button:hover {
+  background-color: #2ecc71; /* Verde mais claro */
+  transform: translateY(-2px); /* Efeito de levantar */
+}
+
+.load-more-button:active {
+  transform: translateY(0); /* Efeito de pressionar */
+}
+
+.load-more-button i {
+  margin-left: 8px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.load-more-button:hover i {
+  transform: translateY(2px); /* Efeito de animação no ícone */
+}
+
+/* Estilo específico para o bloco de Estatísticas do Operador */
+#estatisticas-operador {
+  grid-column: 1 / -1; /* Ocupa todas as colunas */
+}
+
+#estatisticas-operador .card {
+  padding: 20px;
+}
+
+#estatisticas-operador .card canvas {
+  height: 400px !important; /* Aumenta a altura do gráfico */
+}
+
+/* Estilos específicos para a página de pesquisa */
+.search-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #2d2d2d;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.search-container h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.search-form label {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.search-form select,
+.search-form input[type="text"] {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-family: 'Nunito', sans-serif;
+}
+
+.search-form input[type="submit"] {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #27ae60;
+  color: #ffffff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-form input[type="submit"]:hover {
+  background-color: #2ecc71;
+}
+
+.results {
+  margin-top: 20px;
+}
+
+.result-item {
+  padding: 15px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.result-item p {
+  margin: 5px 0;
+  color: #ffffff;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ================================================== */
+/* Estilos específicos para a página tos.html */
+/* ================================================== */
+
+/* Navegação Interna */
+.internal-nav {
+  background-color: #2d2d2d; /* Cinza médio */
+  padding: 10px 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.internal-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.internal-nav ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.internal-nav ul li a:hover {
+  background-color: #27ae60; /* Verde escuro */
+}
+
+/* Seções de Conteúdo */
+.statistics-section {
+  background-color: #2d2d2d; /* Cinza médio */
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.statistics-section h2 {
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #27ae60; /* Linha verde abaixo do título */
+  padding-bottom: 10px;
+}
+
+.statistics-section p {
+  font-size: 16px;
+  color: #e0e0e0; /* Cinza claro para melhor legibilidade */
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.statistics-section a {
+  color: #27ae60; /* Verde escuro para links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.statistics-section a:hover {
+  color: #2ecc71; /* Verde mais claro ao passar o mouse */
+}
+
+/* Responsividade para a página tos.html */
+@media (max-width: 768px) {
+  .internal-nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .internal-nav ul li a {
+    text-align: center;
+  }
+
+  .statistics-section {
+    padding: 20px;
+  }
+
+  .statistics-section h2 {
+    font-size: 20px;
+  }
+
+  .statistics-section p {
+    font-size: 14px;
+  }
+}
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
 }

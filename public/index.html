@@ -6,100 +6,574 @@
   <title>NetMonster - Portugal</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <div class="logo">
-        <img src="/img/logo.png" alt="Logo da NetMonster Portugal" width="80">
-        <h1>NetMonster Portugal</h1>
-      </div>
-      <nav class="navbar">
-        <ul>
-          <li><a href="#ultimas-importacoes">Importações</a></li>
-          <li><a href="https://netmonsterpt.ibakerserver.pt/pesquisa.html">Pesquisa</a></li>
-          <li><a href="#top-usuarios">Usuários</a></li>
-          <li><a href="#top-smartphones">Smartphones</a></li>
-          <li><a href="https://netmonsterpt.ibakerserver.pt/map/s">Mapa</a></li>
+  <!-- Menu Lateral Simplificado -->
+  <nav class="side-menu">
+    <ul>
+      <li>
+        <a href="#pesquisa">
+          <i class="fas fa-search"></i>
+          <span>Pesquisa</span>
+        </a>
+      </li>
+      <li class="submenu">
+        <a href="#mapas" id="mapas-link">
+          <i class="fas fa-map"></i>
+          <span>Mapas</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+        <ul class="submenu-items">
+          <li>
+            <a href="mapa-antenas.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa das Antenas</span>
+            </a>
+          </li>
+          <li>
+            <a href="mapa-pdos.html">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Mapa dos PDO's</span>
+            </a>
+          </li>
         </ul>
-      </nav>
-    </div>
-  </header>
+      </li>
+      <li>
+        <a href="guias.html">
+          <i class="fas fa-book"></i>
+          <span>Guias</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
+  <!-- Conteúdo Principal -->
   <main class="main-content">
-    <section id="ultimas-importacoes" class="statistics-section">
+    <!-- Secção Herói (Cabeçalho Compacto) -->
+    <section class="hero">
       <div class="container">
-        <h2>Últimas Importações</h2>
-        <ul id="lastImportsList"></ul>
+        <div class="logo">
+          <img src="img/logo.png" alt="Logótipo da NetMonster Portugal" width="40">
+          <h1>NetMonster Portugal</h1>
+        </div>
+        <p>Estatísticas e dados em tempo real das redes móveis de Portugal.</p>
       </div>
     </section>
 
-    <section id="estatisticas-operador" class="statistics-section">
-      <div class="container">
-        <h2>Estatísticas por Operador</h2>
-        <ul id="operatorStatsList"></ul>
-      </div>
-    </section>
+    <!-- Primeira Linha: Últimas Importações, Top Utilizadores -->
+    <div class="grid-container">
+      <!-- Últimas Importações -->
+      <section id="ultimas-importacoes" class="section">
+        <div class="container">
+          <h2><i class="fas fa-upload"></i> Últimas Importações</h2>
+          <div class="card">
+            <div class="table-container">
+              <table id="lastImportsTable">
+                <thead>
+                  <tr>
+                    <th>Operadora</th>
+                    <th>ENB/GNB</th>
+                    <th>Morada</th>
+                    <th>Banda</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- As linhas serão preenchidas pelo JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            <button id="loadMoreButton" class="load-more-button">
+              Ver Mais <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+        </div>
+      </section>
 
-    <section id="top-usuarios" class="statistics-section">
-      <div class="container">
-        <h2>Top Usuários</h2>
-        <ul id="topUsersList"></ul>
-      </div>
-    </section>
+      <!-- Principais utilizadores -->
+      <section id="top-utilizadores" class="section">
+        <div class="container">
+          <h2><i class="fas fa-users"></i> Principais utilizadores</h2>
+          <div class="card">
+            <ul id="topUserList">
+              <!-- Os principais utilizadores serão preenchidos aqui -->
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
 
-    <section id="top-smartphones" class="statistics-section">
-      <div class="container">
-        <h2>Top Smartphones</h2>
-        <ul id="topSmartphonesList"></ul>
-      </div>
-    </section>
+    <!-- Segunda Linha: Estatísticas Totais de Sites por Operadora -->
+    <div class="grid-container">
+      <section id="estatisticas-operador" class="section">
+        <div class="container">
+          <h2><i class="fas fa-chart-bar"></i> Estatísticas Totais de Sites por Operadora</h2>
+          <div class="card">
+            <canvas id="operatorStatsChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </div>
 
-    <section id="mapa-antenas" class="map-section">
-      <div class="container">
-        <h2>Mapa de Antenas</h2>
-        <iframe src="https://netmonsterpt.ibakerserver.pt/map/" frameborder="0" width="100%" height="400" aria-label="Mapa de Antenas"></iframe>
-      </div>
-    </section>
+    <!-- Terceira Linha: Estatísticas por Banda (Vodafone e Digi) -->
+    <div class="grid-container">
+      <!-- Estatísticas por Banda - Vodafone -->
+      <section id="estatisticas-bandas-vodafone" class="section">
+        <div class="container">
+          <h2><i class="fas fa-signal"></i> Estatísticas por Bandas - Vodafone</h2>
+          <div class="card">
+            <canvas id="bandStatsChartVodafone"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Estatísticas por Banda - Digi -->
+      <section id="estatisticas-bandas-digi" class="section">
+        <div class="container">
+          <h2><i class="fas fa-signal"></i> Estatísticas por Bandas - Digi</h2>
+          <div class="card">
+            <canvas id="bandStatsChartDigi"></canvas>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Quarta Linha: Estatísticas por Banda (NOS e MEO) -->
+    <div class="grid-container">
+      <!-- Estatísticas por Banda - NOS -->
+      <section id="estatisticas-bandas-nos" class="section">
+        <div class="container">
+          <h2><i class="fas fa-signal"></i> Estatísticas por Bandas - NOS</h2>
+          <div class="card">
+            <canvas id="bandStatsChartNOS"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Estatísticas por Banda - MEO -->
+      <section id="estatisticas-bandas-meo" class="section">
+        <div class="container">
+          <h2><i class="fas fa-signal"></i> Estatísticas por Bandas - MEO</h2>
+          <div class="card">
+            <canvas id="bandStatsChartMEO"></canvas>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
+  <!-- Rodapé -->
   <footer class="footer">
     <div class="container">
-      <p>Direitos Autorais © 2024 NetMonster Portugal</p>
+      <p>Direitos de Autor © 2025 NetMonster Portugal</p>
+      <ul class="footer-links">
+        <li><a href="/sobre-nos.html">Sobre Nós</a></li>
+        <li><a href="/contacto.html">Contacto</a></li>
+        <li><a href="/politica-privacidade.html">Política de Privacidade</a></li>
+      </ul>
     </div>
   </footer>
 
   <script>
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/stats.js');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+    // Mapeamento de frequências para bandas por operadora
+    const frequencyToBandMapping = {
+      '01': { '9360': 'B28', '6300': 'B20', '3525': 'B8', '1300': 'B3', '103': 'B1', '2950': 'B7', '37900': 'B38' },
+      '02': { '3475': 'B8', '1925': 'B3', '2275': 'B7', '2775': 'B7', '38150': 'B38' },
+      '03': { '6400': 'B20', '300': 'B1', '1500': 'B3', '3150': 'B7', '641376': 'N78', '156750': 'N28' },
+      '06': { '6200': 'B20', '3749': 'B8', '1700': 'B3', '500': 'B1', '525': 'B1', '3350': 'B7' }
+    };
 
-        updateList('lastImportsList', data.lastImports);
-        updateList('operatorStatsList', data.operatorStats);
-        updateList('topUsersList', data.topUsers);
-        updateList('topSmartphonesList', data.topSmartphones);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    // Função para obter a banda com base na operadora e frequência
+    function getBandFromFrequency(operatorCode, frequency) {
+      const operatorMapping = frequencyToBandMapping[operatorCode];
+      if (operatorMapping && operatorMapping[frequency]) {
+        return operatorMapping[frequency];
+      }
+      return "Desconhecida"; // Retorna "Desconhecida" se não encontrar a banda
+    }
+
+    // Variáveis globais
+    let currentImports = []; // Armazena todas as próximas
+    let visibleImports = 4; // Número de visualização inicialmente
+
+    // Função para pesquisar as últimas novidades de cada operador
+    async function fetchLastImports() {
+      const operators = [
+        { code: '01', name: 'VODAFONE PT' },
+        { code: '02', name: 'DIGI PT' },
+        { code: '03', name: 'NOS' },
+        { code: '06', name: 'MEO' }
+      ];
+
+      // Para cada operador, procura os dados da API
+      for (const operator of operators) {
+        const url = `http://localhost:8080/api/cell/${operator.code}/268`;
+        console.log(`A pesquisar últimas importações para ${operator.name}...`, url);
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Erro no pedido: ${response.status}`);
+          }
+          const data = await response.json();
+
+          // Apanha as 4 principalmente da operadora atual
+          const imports = data.slice(0, 4).map(cell => ({
+            operator: operator.name,
+            enb: cell.enb,
+            gnb: cell.gnb,
+            morada: cell.location || "Endereço não disponível", // Utiliza o campo "location" da API
+            band: getBandFromFrequency(operator.code, cell.frequency) // Adiciona a banda correspondente
+          }));
+
+          // Adicionado ao array de últimas últimas
+          currentImports.push(...imports);
+        } catch (error) {
+          console.error(`Erro ao procurar dados para ${operator.name}:`, error);
+        }
+      }
+
+      // Atualiza a tabela em HTML
+      updateLastImportsTable();
+    }
+
+    // Função para atualizar a tabela das últimas atualizações
+    function updateLastImportsTable() {
+      const tbody = document.querySelector('#lastImportsTable tbody');
+      tbody.innerHTML = ''; // Limpa a tabela atual
+
+      // Mostra apenas as visíveis
+      currentImports.slice(0, visibleImports).forEach(importData => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${importData.operator}</td>
+          <td>${importData.enb || importData.gnb}</td>
+          <td>${importData.morada}</td>
+          <td>${importData.band}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // Mostra ou esconde o botão "Ver Mais"
+      const loadMoreButton = document.getElementById('loadMoreButton');
+      if (visibleImports >= currentImports.length) {
+        loadMoreButton.style.display = 'none'; // Esconde o botão se não existirem mais itens
+      } else {
+        loadMoreButton.style.display = 'block'; // Mostra o botão
       }
     }
 
-    function updateList(listId, items) {
-      const list = document.getElementById(listId);
-      list.innerHTML = '';
-      items.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        list.appendChild(li);
+    // Função para carregar mais
+    document.getElementById('loadMoreButton').addEventListener('click', () => {
+      visibleImports += 4; // Aumenta o número de itens visíveis
+      updateLastImportsTable(); //Atualiza a tabela
+    });
+
+    // Função para buscar e processar os principais utilizadores
+    async function fetchTopUsers() {
+      const url = 'http://localhost:8080/database/usuarios_ativos.csc';
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar o ficheiro CSV: ${response.status}`);
+        }
+        const csvText = await response.text();
+        console.log('CSV baixado:', csvText); // Log para depuração
+        const users = processCSV(csvText);
+        console.log('Utilizadores processados:', users); // Log para depuração
+        displayTopUsers(users);
+      } catch (error) {
+        console.error('Erro ao buscar os principais utilizadores:', error);
+      }
+    }
+
+    // Função para processar o CSV e retornar os utilizadores ordenados
+    function processCSV(csvText) {
+      const lines = csvText.split('\n');
+      const users = [];
+      lines.forEach(line => {
+        const [username, count] = line.split(',');
+        if (username && count) {
+          users.push({ username: username.trim(), count: parseInt(count.trim(), 10) });
+        }
+      });
+      // Ordena os utilizadores pelo número de importações (do maior para o menor)
+      users.sort((a, b) => b.count - a.count);
+      return users.slice(0, 13); // Retorna os 13 principais
+    }
+
+    // Função para exibir os principais utilizadores na página
+    function displayTopUsers(users) {
+      const topUserList = document.getElementById('topUserList');
+      topUserList.innerHTML = ''; // Limpa a lista atual
+      users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${user.username}: ${user.count} importações`;
+        topUserList.appendChild(listItem);
       });
     }
 
-    window.addEventListener('load', fetchData);
+    // Função para processar os dados de bandas de frequência
+    function processBandData(data, operatorCode) {
+      const bandCounts = {}; // Contagem de bandas por ENB
+
+      data.forEach(cell => {
+        const enb = cell.enb; // Identificador da ENB
+        const frequency = cell.frequency.toString(); // Converte a frequência para string
+        const band = getBandFromFrequency(operatorCode, frequency); // Obtém a banda
+
+        if (band) {
+          // Cria uma chave única para a ENB e a banda
+          const key = `${enb}-${band}`;
+
+          if (!bandCounts[key]) {
+            bandCounts[key] = true; // Marca a banda como contada para essa ENB
+          }
+        }
+      });
+
+      // Conta o número de bandas únicas por ENB
+      const bandTotals = {};
+      for (const key in bandCounts) {
+        const band = key.split('-')[1]; // Extrai a banda da chave
+        if (!bandTotals[band]) {
+          bandTotals[band] = 0;
+        }
+        bandTotals[band]++; // Incrementa a contagem da banda
+      }
+
+      return bandTotals; // Retorna a contagem de bandas por ENB
+    }
+
+    // Função para criar um gráfico de bandas para uma operadora
+    function createBandChart(operatorName, bandData, canvasId) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+
+      // Cores para as bandas
+      const bandColors = {
+        'B1': '#FF6384',
+        'B3': '#36A2EB',
+        'B7': '#FFCE56',
+        'B8': '#4BC0C0',
+        'B20': '#9966FF',
+        'B28': '#FF9F40',
+        'B38': '#C9CBCF',
+        'N78': '#FF6384',
+        'N28': '#36A2EB',
+        // Adicione mais cores conforme necessário
+      };
+
+      // Labels e dados para o gráfico
+      const labels = Object.keys(bandData); // Nomes das bandas
+      const data = Object.values(bandData); // Quantidade de ENBs por banda
+      const backgroundColor = labels.map(band => bandColors[band] || '#CCCCCC'); // Cores das bandas
+
+      // Cria o gráfico
+      new Chart(ctx, {
+        type: 'bar', // Tipo de gráfico: barras
+        data: {
+          labels: labels, // Nomes das bandas
+          datasets: [{
+            label: `Bandas (${operatorName})`,
+            data: data, // Quantidade de bandas por site
+            backgroundColor: backgroundColor,
+            borderColor: '#fff',
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false, // Oculta a legenda
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `${context.label}: ${context.raw} ENBs`; // Exibe a quantidade de ENBs no tooltip
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true, // Começa do zero
+              title: {
+                display: true,
+                text: 'Quantidade de Bandas', // Título do eixo Y
+                font: {
+                  size: 14,
+                  weight: 'bold',
+                },
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Bandas', // Título do eixo X
+                font: {
+                  size: 14,
+                  weight: 'bold',
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // Função para buscar e processar os dados de todas as operadoras
+    async function fetchAllOperatorData() {
+      const operators = [
+        { code: '01', name: 'VODAFONE PT' },
+        { code: '02', name: 'DIGI PT' },
+        { code: '03', name: 'NOS' },
+        { code: '06', name: 'MEO' }
+      ];
+
+      const operatorCounts = {}; // Armazena a contagem de ENBs por operadora
+      const operatorBandData = {}; // Armazena os dados de bandas por operadora
+
+      // Para cada operador, procura os dados da API
+      for (const operator of operators) {
+        const url = `http://localhost:8080/api/cell/${operator.code}/268`;
+        console.log(`A pesquisar dados para ${operator.name} (código ${operator.code})...`, url);
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log(`Dados recebidos para ${operator.name}:`, data);
+
+          // Processa os dados da operadora atual
+          operatorCounts[operator.name] = processOperatorData(data); // Conta ENBs
+          operatorBandData[operator.name] = processBandData(data, operator.code); // Conta bandas por ENB
+
+          console.log(`Contagem de ENBs para ${operator.name}:`, operatorCounts[operator.name]);
+          console.log(`Estatísticas de bandas para ${operator.name}:`, operatorBandData[operator.name]);
+
+          // Cria o gráfico de bandas para a operadora atual
+          if (operator.code === '01') {
+            createBandChart(operator.name, operatorBandData[operator.name], 'bandStatsChartVodafone');
+          } else if (operator.code === '02') {
+            createBandChart(operator.name, operatorBandData[operator.name], 'bandStatsChartDigi');
+          } else if (operator.code === '03') {
+            createBandChart(operator.name, operatorBandData[operator.name], 'bandStatsChartNOS');
+          } else if (operator.code === '06') {
+            createBandChart(operator.name, operatorBandData[operator.name], 'bandStatsChartMEO');
+          }
+        } catch (error) {
+          console.error(`Erro ao procurar dados para ${operator.name}:`, error);
+        }
+      }
+
+      // Atualiza o gráfico de Estatísticas do Operador
+      updateOperatorStatsChart(operatorCounts);
+    }
+
+    // Função para processar os dados de um operador (conta ENBs)
+    function processOperatorData(data) {
+      if (data.length === 0) {
+        console.warn('Não foram encontrados dados para a operadora.');
+        return 0; // Retorno 0 se não existirem dados
+      }
+
+      const uniqueENBs = new Set();
+      data.forEach(cell => {
+        const enb = cell.enb;
+        const coordinates = `${cell.latitude},${cell.longitude}`;
+        if (!uniqueENBs.has(`${enb}-${coordinates}`)) {
+          uniqueENBs.add(`${enb}-${coordinates}`);
+        }
+      });
+      return uniqueENBs.size;
+    }
+
+    // Função para atualizar os gráficos de estatísticas da operadora
+    function updateOperatorStatsChart(data) {
+      console.log('A actualizar os gráficos de estatísticas da operadora...');
+      const labels = Object.keys(data); // Nomes das operadoras
+      const values = labels.map(label => data[label]); // Valores das operadoras
+
+      const ctx = document.getElementById('operatorStatsChart').getContext('2d');
+
+      // Verifica se já existe um gráfico e o destrói antes de criar um novo
+      if (window.operatorStatsChart instanceof Chart) {
+        window.operatorStatsChart.destroy();
+      }
+
+      // Cria o gráfico
+      window.operatorStatsChart = new Chart(ctx, {
+        type: 'bar', // Tipo de gráfico: barras verticais
+        data: {
+          labels: labels, // Nomes das operadoras
+          datasets: [{
+            label: 'Estatísticas por Operadora',
+            data: values, // Valores das operadoras
+            backgroundColor: ['#2ecc71', '#3498db', '#9b59b6', '#e74c3c'], // Cores das barras
+            borderColor: '#fff', // Cor da borda das barras
+            borderWidth: 1 // Espessura da borda
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false, // Oculta a legenda
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true, // Começa do zero
+              title: {
+                display: true,
+                text: 'Quantidade de Sites', // Título do eixo Y
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              },
+              ticks: {
+                stepSize: 1000, // Define intervalos de 1000 no eixo Y
+                callback: function (value) {
+                  return value.toLocaleString(); // Formato dos números com separadores de milhares
+                }
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Operadoras', // Título do eixo X
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Inicializa os gráficos e procura os dados ao carregar a página
+    window.addEventListener('load', () => {
+      console.log('Página partilhada. A iniciar pesquisa de dados...');
+      fetchLastImports(); //Procura dados das últimas
+      fetchTopUsers(); // Busca os principais utilizadores
+      fetchAllOperatorData(); //Pesquisa dados das operadoras
+    });
+
+    // Função para abrir/fechar o submenu de Mapas
+    document.getElementById('mapas-link').addEventListener('click', function (e) {
+      e.preventDefault(); // Evita o comportamento padrão do link
+      const submenu = this.nextElementSibling; // Seleciona o submenu
+      submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block'; // Alterna a visibilidade
+    });
   </script>
 </body>
 </html>
